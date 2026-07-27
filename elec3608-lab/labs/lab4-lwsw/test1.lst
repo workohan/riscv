@@ -1,0 +1,19 @@
+GAS LISTING test1.s 			page 1
+
+
+   1              	.section .text
+   2              	.global _start
+   3              	_start:
+   4 0000 9300000D 	    addi x1, zero, 0xd0
+   5 0004 13014002 	    addi sp, zero, 0x24
+   6 0008 23201100 		sw	x1,0(sp)
+   7 000c 1301C1FF 	    addi sp,sp,-4
+   8 0010 03254100 	    lw  x10,4(sp)
+   9 0014 0F00F00F 	    fence
+GAS LISTING test1.s 			page 2
+
+
+DEFINED SYMBOLS
+             test1.s:3      .text:0000000000000000 _start
+
+NO UNDEFINED SYMBOLS
