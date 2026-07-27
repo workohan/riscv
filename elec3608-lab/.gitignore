@@ -1,0 +1,104 @@
+# Prerequisites
+*.d
+.bash*
+.vim*
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# Verilator
+*.dmp
+*.log
+*.csrc
+*.vcd
+obj_*
+logs
+.stamp*
+
+# --- Python Artifacts (PyVerilator & testbench runs) ---
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# --- Verilator, Slang & Waveforms ---
+obj_dir/
+*.vcd
+*.fst
+*.ghw
+*.log
+*.dmp
+*.csrc
+.slang/
+.cache/
+.stamp*
+
+# --- RISC-V Toolchain & C/Assembly Build Artifacts ---
+*.o
+*.a
+*.elf
+*.bin
+*.hex
+*.dis
+*.dump
+*.map
+*.i*86
+*.x86_64
+
+# --- Specific Non-Extension Executables (Lab 7 Spike Builds) ---
+lab7-spike/dhrystone/dhrystone
+lab7-spike/docker/hello
+
+# --- Neovim & Shell Artifacts ---
+*.swp
+*.swo
+*~
+.netrwhist
+*.bash_history
+.bash_history
