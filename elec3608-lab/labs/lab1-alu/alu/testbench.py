@@ -50,4 +50,12 @@ ok = test_alu(tb, ALU_ADD, 0x7FFFFFFF, 0xFF)
 ok = test_alu(tb, ALU_SUB, 0xDEADBEEF, 0xDEADBEEF)
 ok = test_alu(tb, ALU_SUB, 0xDEADBEEF, 2)
 ok = test_alu(tb, ALU_SUB, 0xE1E10, 0xDEADBEEF)
+
+"""
+add tests for:
+    
+"""
+
+
+
 tb.stop_vcd_trace()
