@@ -25,10 +25,10 @@ module alu (
 
             // TODO: handle edgecases where you're shifting by >31 bits
             // only use the last few bits?
-            `ALU_SLL: result = op_a << op_b;
-            `ALU_SRL: result = op_a >> op_b;
-            ALU_SRA: result = op_a + op_b;
-            /* SRL impl:
+            `ALU_SLL: result = op_a << op_b[4:0];
+            `ALU_SRL: result = op_a >> op_b[4:0];
+            `ALU_SRA: result = op_a >>> op_b[4:0];
+            /* SRA impl: (DONE)
             wire msb = op_a[bits-1]; // to know what it should be
             wire (?) no_bits_to_shift = op_b[5:0] // from earlier
 
@@ -40,16 +40,13 @@ module alu (
             result = (op_a >> op_b) + actual_padding;
             */
 
-
-            // ALU_SLT:
-            // ALU_SLTU:
+            `ALU_SLT: result = ($signed(op_a) < $signed(ob_b)) ? 31'b1 : 32'b0;
+            `ALU_SLTU: result = (op_a < ob_b) ? 31'b1 : 32'b0;
             default:  result = `ZERO;
         endcase
 
-        result_eq_zero = (result == `ZERO) ? 1'b1 : 1'b0;  // simple comparision to set zero
+        result_eq_zero = (result == `ZERO) ? 32'b1 : 32'b0;  // simple comparision to set zero
 
-        // gates: you can implement this by &&ing all the bits together and then inverting the result
-        //
     end
 
 endmodule

@@ -43,7 +43,7 @@ def test_alu(tb, alu_function, a, b):
 
 tb = pyverilator.PyVerilator.build("alu.sv")
 
-tb.start_vcd_trace("addsub.vcd")
+# tb.start_vcd_trace("addsub.vcd")
 ok = test_alu(tb, ALU_ADD, 1, 2)
 ok = test_alu(tb, ALU_ADD, 0xFFFFFFFF, 2)
 ok = test_alu(tb, ALU_ADD, 0x7FFFFFFF, 0xFF)
@@ -52,10 +52,17 @@ ok = test_alu(tb, ALU_SUB, 0xDEADBEEF, 2)
 ok = test_alu(tb, ALU_SUB, 0xE1E10, 0xDEADBEEF)
 
 """
-add tests for:
-    
+add tests for: (according to RISCV spec)
+    ALU_XOR
+
+    ALU_SLL
+    ALU_SRL
+    ALU_SRA:
+        Cases when opb = 0 and 31
+        
+
 """
 
 
 
-tb.stop_vcd_trace()
+# tb.stop_vcd_trace()
