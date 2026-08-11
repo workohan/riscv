@@ -10,7 +10,7 @@ module alu (
     input [31:0] op_a,
     input [31:0] op_b,
     output logic [31:0] result,
-    output result_eq_zero
+    output logic result_eq_zero
 );
 
     // Compute result
@@ -23,29 +23,16 @@ module alu (
             `ALU_OR:  result = op_a | op_b;
             `ALU_AND: result = op_a & op_b;
 
-            // TODO: handle edgecases where you're shifting by >31 bits
-            // only use the last few bits?
             `ALU_SLL: result = op_a << op_b[4:0];
             `ALU_SRL: result = op_a >> op_b[4:0];
-            `ALU_SRA: result = op_a >>> op_b[4:0];
-            /* SRA impl: (DONE)
-            wire msb = op_a[bits-1]; // to know what it should be
-            wire (?) no_bits_to_shift = op_b[5:0] // from earlier
+            `ALU_SRA: result = $signed(op_a) >>> op_b[4:0];
 
-            // now conv to one hot encoding; i.e. 6 = 11111....
-            wire (?) ONES = 31b'6 (should actually be set to the no. bits) // this is the 111... to use
-            wire temp_pad = ONES << (32 - no_bits_to_shift) // results in array like {1}s + {0}s
-            wire actual_padding = temp_pad & msb; // to get 0s or 1s based on msb
-
-            result = (op_a >> op_b) + actual_padding;
-            */
-
-            `ALU_SLT: result = ($signed(op_a) < $signed(ob_b)) ? 31'b1 : 32'b0;
-            `ALU_SLTU: result = (op_a < ob_b) ? 31'b1 : 32'b0;
+            `ALU_SLT: result = ($signed(op_a) < $signed(op_b)) ? 1'b1 : 1'b0;
+            `ALU_SLTU: result = (op_a < op_b) ? 1'b1 : 1'b0;
             default:  result = `ZERO;
         endcase
 
-        result_eq_zero = (result == `ZERO) ? 32'b1 : 32'b0;  // simple comparision to set zero
+        result_eq_zero = (result == `ZERO) ? 1'b1 : 1'b0;  // simple comparision to set zero
 
     end
 
