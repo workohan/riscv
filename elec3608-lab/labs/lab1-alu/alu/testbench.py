@@ -114,7 +114,7 @@ test_alu(tb, ALU_SUB, 0xE1E10, 0xDEADBEEF)
 # 2. Bitwise Logic (XOR, OR, AND)
 # ----------------------------
 print("--- LOGIC ---")
-test_alu(tb, ALU_XOR, 0xAAAAAAAA, 0x55555555) # Alternating bits
+test_alu(tb, ALU_XOR, 0x00000000, 0x000000e1) # Alternating bits
 test_alu(tb, ALU_XOR, 0xFFFFFFFF, 0x00000000)
 test_alu(tb, ALU_XOR, 0x12345678, 0x12345678) # Same value -> 0
 

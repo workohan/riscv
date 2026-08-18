@@ -33,45 +33,65 @@ module rv3608a (
 
     // we have 2 external memories
     // one is instruction memory
-    output  [31:0] imem_addr,
-    input   [31:0] imem_data
+    output [31:0] imem_addr,
+    input  [31:0] imem_data
 );
     // instruction memory pointer
-    assign  imem_addr = pc;
-    assign  insn = imem_data;
+    assign imem_addr = pc;
+    assign insn = imem_data;
 
-    // ALU 
-	wire   alu_eq_zero;
-    wire   [31:0] alu_result;
-    wire   alu_eq;
-    wire   [31:0] alu_op_a = regfile[insn_rs1];
-	wire   [31:0] alu_op_b = insn_opcode == `OPCODE_OP_IMM ? 
-                                imm_val : regfile[insn_rs2];
+    // ALU
+    wire alu_eq_zero;
+    wire [31:0] alu_result;
+    wire alu_eq;
+    wire [31:0] alu_op_a = regfile[insn_rs1];
+    wire [31:0] alu_op_b = insn_opcode == `OPCODE_OP_IMM ? imm_val : regfile[insn_rs2];
 
     // instantiate ALU here
-	alu alu_1 (
-		.alu_function(alu_op),
-		.op_a(alu_op_a),
-		.op_b(alu_op_b),
-		.result(alu_result),
-		.result_eq_zero(alu_eq_zero)
-	);
+    alu alu_1 (
+        .alu_function(alu_op),
+        .op_a(alu_op_a),
+        .op_b(alu_op_b),
+        .result(alu_result),
+        .result_eq_zero(alu_eq_zero)
+    );
 
-    
-	// combinational assignment of alu_op
-	logic  [4:0] alu_op;
+
+    // combinational assignment of alu_op
+    logic [4:0] alu_op;
     always_comb begin
-		illegalinsn = 0;
-		case (insn_opcode)
-			0: alu_op = `ALU_ADD;	// NOP
+        illegalinsn = 0;
+        case (insn_opcode)
+            0: alu_op = `ALU_ADD;  // NOP
 
-			`OPCODE_OP_IMM: begin
-				casez ({insn_funct7, insn_funct3})
-					10'b zzzzzzz_000 /* ADDI  */: alu_op = `ALU_ADD;
-				endcase
-			end
-		endcase
-	end
+            `OPCODE_OP_IMM: begin
+                casez ({
+                    insn_funct7, insn_funct3
+                })
+                    10'bzzzzzzz_000  /* ADDI  */: alu_op = `ALU_ADD;
+                    10'bzzzzzzz_100  /* XORI  */: alu_op = `ALU_XOR;
+                    10'bzzzzzzz_110  /* ORI   */: alu_op = `ALU_OR;
+                    `OPCODE_SLLI  /* SLLI  */: alu_op = `ALU_SLL;
+                    default:                      alu_op = 'x;
+                endcase
+            end
+
+            `OPCODE_OP: begin
+                casez ({
+                    insn_funct7, insn_funct3
+                })
+                    10'b0000000_000  /* ADD  */: alu_op = `ALU_ADD;
+                    // 10'bzzzzzzz_100  /* XOR  */: alu_op = `ALU_XOR;
+                    // 10'bzzzzzzz_110  /* OR  */: alu_op = `ALU_OR;
+                    // `OPCODE_SLLI  /* SLL  */: alu_op = `ALU_SLL; // TODO: fix
+                    default:                      alu_op = 'x;
+                endcase
+
+            end
+
+
+        endcase
+    end
 
     // components of the instruction
     wire [6:0] insn_funct7;
@@ -95,38 +115,36 @@ module rv3608a (
     wire [31:0] imm_shift = 32'(signed'({1'b0, insn[24:20]}));
     // use the 5-bit immediate for shifts otherwise the 12-bit one
     wire [31:0] imm_val;
-    assign imm_val = 
+    assign imm_val =
         ({insn_funct7, insn_funct3} == `OPCODE_SLLI ||
          {insn_funct7, insn_funct3} == `OPCODE_SRLI ||
          {insn_funct7, insn_funct3} == `OPCODE_SRAI)
          ? imm_shift : imm_i_sext; // either a shift or an imm
 
-    // trap is an output to show that execution has halted 
+    // trap is an output to show that execution has halted
     logic illegalinsn;
     logic trapped;
     assign trap = trapped;
 
     // registers, instruction reg, program counter, next pc
-    logic   [31:0] regfile [0:`NUMREGS-1];
-    logic   [31:0] pc;
-    wire   [31:0] insn;
+    logic [31:0] regfile[0:`NUMREGS-1];
+    logic [31:0] pc;
+    wire  [31:0] insn;
 
     // every cycle
     always_ff @(posedge clock) begin
-		if (!trapped && !reset) begin
-			if (illegalinsn)
-				trapped <= 1;
-	
-			pc <= pc + 4;
-            $display("pc = 0x%08x", pc);
-        	regfile[insn_rd] <= alu_result;
+        if (!trapped && !reset) begin
+            if (illegalinsn) trapped <= 1;
+
+            pc <= pc + 4;
+            regfile[insn_rd] <= alu_result;
             return_reg <= regfile[10];
 
-    	end
+        end
         // reset
         if (reset) begin
-		    pc <= 0;
-           	trapped <= 0;
+            pc <= 0;
+            trapped <= 0;
         end
     end
 
