@@ -32,8 +32,6 @@ module alu (
             default:  result = `ZERO;
         endcase
 
-        $display("Display %h", result);
-
         result_eq_zero = (result == `ZERO) ? 1'b1 : 1'b0;  // simple comparision to set zero
 
     end

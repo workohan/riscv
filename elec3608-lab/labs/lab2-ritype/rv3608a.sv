@@ -71,7 +71,7 @@ module rv3608a (
                     10'bzzzzzzz_000  /* ADDI  */: alu_op = `ALU_ADD;
                     10'bzzzzzzz_100  /* XORI  */: alu_op = `ALU_XOR;
                     10'bzzzzzzz_110  /* ORI   */: alu_op = `ALU_OR;
-                    `OPCODE_SLLI  /* SLLI  */: alu_op = `ALU_SLL;
+                    `OPCODE_SLLI  /* SLLI  */:    alu_op = `ALU_SLL;
                     default:                      alu_op = 'x;
                 endcase
             end
@@ -84,9 +84,14 @@ module rv3608a (
                     // 10'bzzzzzzz_100  /* XOR  */: alu_op = `ALU_XOR;
                     // 10'bzzzzzzz_110  /* OR  */: alu_op = `ALU_OR;
                     // `OPCODE_SLLI  /* SLL  */: alu_op = `ALU_SLL; // TODO: fix
-                    default:                      alu_op = 'x;
+                    default:                     alu_op = 'x;
                 endcase
 
+            end
+
+            32'b00000000000100000000000001110011  /* EBREAK */: illegalinsn = 1'b1;
+            default: begin
+                illegalinsn = 1'b1;
             end
 
 
@@ -135,7 +140,6 @@ module rv3608a (
     always_ff @(posedge clock) begin
         if (!trapped && !reset) begin
             if (illegalinsn) trapped <= 1;
-
             pc <= pc + 4;
             regfile[insn_rd] <= alu_result;
             return_reg <= regfile[10];
