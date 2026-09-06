@@ -138,3 +138,6 @@ L2:
 quit:
     ebreak
 ```
+
+#### HOW TO DEMO:
+riscv64-unknown-elf-gcc -march=rv32i -mabi=ilp32 -Os -Wall -Wextra -Wl,-Bstatic,-T,sections.lds,--strip-debug -ffreestanding -nostdlib -o fib.elf fib.s && riscv64-unknown-elf-objcopy -O verilog fib.elf firmware.hex && python testbench.py
