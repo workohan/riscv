@@ -3,7 +3,7 @@
 In this lab you will deal with branch instructions for the 2-stage pipelined processor.
 
 ## Lab Questions
-### Part 1 - Assembly Language (30%)
+### Part 1 - Assembly Language (30%) (DONE; double check output)
 Using the design and ```firmware.s``` code from the previous lab,
 rewrite the sequence of instructions so that it is as compact as
 possible and uses a loop.  Verify the operation of your program
@@ -16,6 +16,15 @@ A single branch delay slot is the scheme used in the [MIPS-I](https://en.wikiped
 
 Draw a picture of a modified datapath which allows your pipelined
 processor to pipeline branches with a single delay slot.
+
+TODO:
+* how to represent a nop (or is it there already)
+* Currently:
+  1. Branch hits execute
+  2. Alu computes the result value using ppc (?? or something)
+* probably involves the ppc (previous pc). so
+  0. All instructions are latched onto ppc, there is branch and then another instruction
+  1. Branch instruction hits execute
 
 ### Part 3 - Pipelined Processor (50%) 
 Modify the Verilog design in Part 2 of the previous lab so that the
@@ -30,4 +39,3 @@ Explain in your lab book:
  1. how the scheme works
  2. changes in Verilog that were needed and 
  3. illustrate execution of ```firmware.s``` with a GTKWave screen shot.
-
