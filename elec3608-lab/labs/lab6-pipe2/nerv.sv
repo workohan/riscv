@@ -89,8 +89,18 @@ module nerv #(
 
     logic [31:0] ex_insn;
     always @(posedge clock) begin
-        ir <= imem_data;  // label: ir is set here, represents the instruction for the id stage
-        ex_insn <= ir; // label: the instruction for the execute stage
+        // ir <= imem_data;  // label: ir is set here, represents the instruction for the id stage
+        // ex_insn <= ir; // label: the instruction for the execute stage
+        if (reset) begin
+                   ir <= 32'h00000013;       // NOP
+                   ex_insn <= 32'h00000013;  // NOP
+               end else if (mem_rd_enable_q) begin
+                   // Stall: do not update ex_insn so it replays after memory load
+               end else begin
+                   ir <= imem_data;
+                       ex_insn <= ir;
+               end
+
     end
 
 
@@ -237,8 +247,8 @@ module nerv #(
             // Jump And Link (unconditional jump)
             OPCODE_JAL: begin
                 next_wr = 1;
-                next_rd = npc;
-                npc = pc + imm_j_sext;
+                next_rd = ppc + 8;
+                npc = ppc + imm_j_sext;
                 if (npc & 32'b11) begin
                     illinsn = 1;
                     npc = npc & ~32'b11;
@@ -249,7 +259,7 @@ module nerv #(
                 case (insn_funct3)
                     3'b000  /* JALR */: begin
                         next_wr = 1;
-                        next_rd = npc;
+                        next_rd = ppc+8;
                         npc = (rs1_value + imm_i_sext) & ~32'b1;
                     end
                     default: illinsn = 1;
@@ -264,22 +274,22 @@ module nerv #(
             OPCODE_BRANCH: begin
                 case (id_insn_funct3)
                     3'b000  /* BEQ  */: begin
-                        if (id_rs1_value == id_rs2_value) npc = pc + id_imm_b_sext;
+                        if (id_rs1_value == id_rs2_value) npc = ppc + imm_b_sext;
                     end
                     3'b001  /* BNE  */: begin
-                        if (id_rs1_value != id_rs2_value) npc = pc + id_imm_b_sext;
+                        if (id_rs1_value != id_rs2_value) npc = ppc + imm_b_sext;
                     end
                     3'b100  /* BLT  */: begin
-                        if ($signed(id_rs1_value) < $signed(id_rs2_value)) npc = pc + id_imm_b_sext;
+                        if ($signed(id_rs1_value) < $signed(id_rs2_value)) npc = ppc + imm_b_sext;
                     end
                     3'b101  /* BGE  */: begin
-                        if ($signed(id_rs1_value) >= $signed(id_rs2_value)) npc = pc + id_imm_b_sext;
+                        if ($signed(id_rs1_value) >= $signed(id_rs2_value)) npc = ppc + imm_b_sext;
                     end
                     3'b110  /* BLTU */: begin
-                        if (id_rs1_value < id_rs2_value) npc = pc + id_imm_b_sext;
+                        if (id_rs1_value < id_rs2_value) npc = ppc + imm_b_sext;
                     end
                     3'b111  /* BGEU */: begin
-                        if (id_rs1_value >= id_rs2_value) npc = pc + id_imm_b_sext;
+                        if (id_rs1_value >= id_rs2_value) npc = ppc + imm_b_sext;
                     end
                     default: illinsn = 1;
                 endcase
@@ -439,6 +449,7 @@ module nerv #(
             illinsn = 0;
             mem_rd_enable = 0;
             mem_wr_enable = 0;
+            branch_taken = 0;
         end
 
         // reset
