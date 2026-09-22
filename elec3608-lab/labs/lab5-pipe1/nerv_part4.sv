@@ -135,7 +135,7 @@ module nerv #(
 
     // registers, instruction reg, program counter, next pc
     logic [31:0] regfile[0:NUMREGS-1];
-    wire  [31:0] insn;
+    wire  [31:0] ex_insn;
     logic [31:0] npc;
     logic [31:0] pc;
 
@@ -149,8 +149,6 @@ module nerv #(
     assign imem_addr = (trap || mem_rd_enable_q) ? imem_addr_q : npc;
 
     // ===============================================================
-    // IF/ID PIPELINE REGISTER  (the "instruction registers" of pipefig)
-    //
     //   PPC : the PC that belongs to the instruction in the IR
     //   IR  : the fetched instruction word
     //
@@ -166,11 +164,7 @@ module nerv #(
         ir  <= imem_data;
     end
 
-    assign insn = ir;
-
-    // rs1 and rs2 are source for the instruction
-    wire [31:0] rs1_value = !insn_rs1 ? 0 : regfile[insn_rs1];
-    wire [31:0] rs2_value = !insn_rs2 ? 0 : regfile[insn_rs2];
+    assign ex_insn = ir; // label: async assignment, so no issue
 
     // components of the instruction
     wire [ 6:0] insn_funct7;
@@ -181,12 +175,17 @@ module nerv #(
     wire [ 6:0] insn_opcode;
 
     // split R-type instruction - see section 2.2 of RiscV spec
-    assign {insn_funct7, insn_rs2, insn_rs1, insn_funct3, insn_rd, insn_opcode} = insn;
+    assign {insn_funct7, insn_rs2, insn_rs1, insn_funct3, insn_rd, insn_opcode} = ex_insn;
+
+    // rs1 and rs2 are source for the instruction
+    wire [31:0] rs1_value = !insn_rs1 ? 0 : regfile[insn_rs1];
+    wire [31:0] rs2_value = !insn_rs2 ? 0 : regfile[insn_rs2];
+
 
     // setup for I, S, B & J type instructions
     // I - short immediates and loads
     wire [11:0] imm_i;
-    assign imm_i = insn[31:20];
+    assign imm_i = ex_insn[31:20];
 
     // S - stores
     wire [11:0] imm_s;
@@ -200,7 +199,7 @@ module nerv #(
 
     // J - unconditional jumps
     wire [20:0] imm_j;
-    assign {imm_j[20], imm_j[10:1], imm_j[11], imm_j[19:12], imm_j[0]} = {insn[31:12], 1'b0};
+    assign {imm_j[20], imm_j[10:1], imm_j[11], imm_j[19:12], imm_j[0]} = {ex_insn[31:12], 1'b0};
 
     wire [31:0] imm_i_sext = $signed(imm_i);
     wire [31:0] imm_s_sext = $signed(imm_s);
@@ -343,7 +342,7 @@ module nerv #(
     logic        ex_misaligned;
 
     always @(posedge clock) begin
-        ex_insn       <= insn;
+        ex_insn       <= ex_insn;
         ex_pc         <= ppc;
         ex_rs1_value  <= rs1_value;
         ex_rs2_value  <= rs2_value;
