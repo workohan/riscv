@@ -271,10 +271,13 @@ module nerv #(
             end
             // branch instructions: Branch If Equal, Branch Not Equal, Branch Less Than, Branch Greater Than, Branch Less Than Unsigned, Branch Greater Than Unsigned
             // label: branch instructions happen here
+            // todo: i think branch takes two cycles to execute, so 2 addis happen and then it jumps one beyond what it was expecting
+            // soln: branch should happen in one cycle, which it doesn't right now..
+            // beq takes two cycles on the sim, like straight up stalls the processor (should be the nop)
             OPCODE_BRANCH: begin
                 case (id_insn_funct3)
                     3'b000  /* BEQ  */: begin
-                        if (id_rs1_value == id_rs2_value) npc = ppc + imm_b_sext;
+                        if (id_rs1_value == id_rs2_value) npc = pc + imm_b_sext;
                     end
                     3'b001  /* BNE  */: begin
                         if (id_rs1_value != id_rs2_value) npc = ppc + imm_b_sext;
@@ -449,7 +452,6 @@ module nerv #(
             illinsn = 0;
             mem_rd_enable = 0;
             mem_wr_enable = 0;
-            branch_taken = 0;
         end
 
         // reset
