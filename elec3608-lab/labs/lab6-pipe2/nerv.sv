@@ -72,7 +72,6 @@ module nerv #(
 
     // registers, instruction reg, program counter, next pc
     logic [31:0] regfile[0:NUMREGS-1];
-    wire [31:0] ex_insn;
     logic [31:0] npc;
     logic [31:0] pc;
 
@@ -87,27 +86,75 @@ module nerv #(
     assign imem_addr = (trap || mem_rd_enable_q) ? imem_addr_q : npc;
 
 
+    // ---------------------------------------------------------------
+    // IF/ID and ID/EX pipeline registers.
+    //
+    //   ir     : IF/ID  - the fetched instruction word (ID stage)
+    //   ex_insn: ID/EX  - the instruction being executed (EX stage)
+    //   ex_pc  : ID/EX  - the address that instruction was fetched from
+    //
+    // An instruction takes TWO fetch cycles to travel from `pc` into
+    // `ex_insn`, because the instruction memory returns its data one
+    // cycle after its address is presented, and `ir` adds one more:
+    //
+    //   edge N   : pc = A          address A presented to imem
+    //   edge N+1 : imem_data = insn(A)   -> latched into ir
+    //   edge N+2 : ir = insn(A)          -> latched into ex_insn
+    //
+    // `ex_pc` therefore has to be delayed by the same two registers
+    // (pc -> ex_pc1 -> ex_pc) so that it still remembers A at the moment
+    // insn(A) reaches EX.  It is used for the trace output; branch
+    // offsets are resolved in ID against `ppc` (see the branch case).
+    // ---------------------------------------------------------------
     logic [31:0] ex_insn;
+    logic [31:0] ex_pc1;     // pc delayed by one fetch cycle
+    logic [31:0] ex_pc;      // pc delayed by two fetch cycles == address in EX
     always @(posedge clock) begin
         // ir <= imem_data;  // label: ir is set here, represents the instruction for the id stage
         // ex_insn <= ir; // label: the instruction for the execute stage
         if (reset) begin
                    ir <= 32'h00000013;       // NOP
                    ex_insn <= 32'h00000013;  // NOP
+                   ex_pc1 <= 32'h00000000;
+                   ex_pc <= 32'h00000000;
                end else if (mem_rd_enable_q) begin
                    // Stall: do not update ex_insn so it replays after memory load
                end else begin
                    ir <= imem_data;
-                       ex_insn <= ir;
+                   ex_insn <= ir;
+                   ex_pc1 <= pc;
+                   ex_pc <= ex_pc1;
                end
 
     end
 
 
-    // --------- FOR ID JUMP
+    // ---------------------------------------------------------------
+    // ID stage: decode of the instruction in IR.
+    //
+    // This stage does instruction decode, the register-file read, and
+    // the next-PC decision (branches and jumps).  Resolving control
+    // transfers here is what gives the design its single delay slot:
+    // by the time the branch is in IR, the instruction after it has
+    // already been fetched, so redirecting npc now leaves that
+    // instruction in flight.  It arrives in IR on the next edge and
+    // retires normally - no bubble and no flush is required.
+    // ---------------------------------------------------------------
+    wire [31:0] id_insn;
     assign id_insn = ir; // label: just an alias
 
     // split R-type instruction - see section 2.2 of RiscV spec
+    //
+    // NOTE: these MUST be explicitly declared.  Without the declarations
+    // below they become implicit 1-bit nets, so e.g. `id_insn_opcode` would
+    // only ever carry bit 0 of the real opcode and the ID-stage control
+    // transfer test would never match OPCODE_BRANCH.
+    wire [ 6:0] id_insn_funct7;
+    wire [ 4:0] id_insn_rs2;
+    wire [ 4:0] id_insn_rs1;
+    wire [ 2:0] id_insn_funct3;
+    wire [ 4:0] id_insn_rd;
+    wire [ 6:0] id_insn_opcode;
     assign {id_insn_funct7, id_insn_rs2, id_insn_rs1, id_insn_funct3, id_insn_rd, id_insn_opcode} = id_insn; // label: split for id
 
     // B - conditionals
@@ -118,10 +165,29 @@ module nerv #(
 
     wire [31:0] id_imm_b_sext = $signed(id_imm_b);
 
+    // I - short immediates and loads
+    wire [11:0] id_imm_i;
+    assign id_imm_i = id_insn[31:20];
+    wire [31:0] id_imm_i_sext = $signed(id_imm_i);
 
-    // rs1 and rs2 are source for the instruction
+    // J - unconditional jumps
+    wire [20:0] id_imm_j;
+    assign {id_imm_j[20], id_imm_j[10:1], id_imm_j[11], id_imm_j[19:12], id_imm_j[0]} =
+        {id_insn[31:12], 1'b0};
+    wire [31:0] id_imm_j_sext = $signed(id_imm_j);
+
+
+    // rs1 and rs2 sourced from the ID-stage instruction, i.e. the operands
+    // used by the control-transfer comparison in the ID stage.
     wire [31:0] id_rs1_value = !id_insn_rs1 ? 0 : regfile[id_insn_rs1];
     wire [31:0] id_rs2_value = !id_insn_rs2 ? 0 : regfile[id_insn_rs2];
+
+    // EX -> ID operand bypass.  A branch/jump in ID may depend on the result
+    // of the instruction immediately ahead of it, which is in EX this cycle
+    // and whose write-back only lands on this clock edge.  `next_wr`/`next_rd`
+    // are exactly that result, computed from `insn` (= ex_insn) in the block
+    // below; they do not depend on br_a/br_b, so there is no combinational loop.
+    logic [31:0] br_a, br_b;
     // ----------
 
     // ---------- FOR EX
@@ -242,64 +308,45 @@ module nerv #(
             // Add Upper Immediate to Program Counter
             OPCODE_AUIPC: begin
                 next_wr = 1;
-                next_rd = (insn[31:12] << 12) + pc;
+                // `ex_pc` is this instruction's own address
+                next_rd = (insn[31:12] << 12) + ex_pc;
             end
             // Jump And Link (unconditional jump)
+            //
+            // The fetch redirect happens in the ID block below, so the jump
+            // gets the same single delay slot as a branch.  Here we only
+            // produce the link value: the jump is in EX now, so `ex_pc` is
+            // its own address and the return address is past the delay slot.
             OPCODE_JAL: begin
                 next_wr = 1;
-                next_rd = ppc + 8;
-                npc = ppc + imm_j_sext;
-                if (npc & 32'b11) begin
-                    illinsn = 1;
-                    npc = npc & ~32'b11;
-                end
+                next_rd = ex_pc + 8;
             end
             // Jump And Link Register (indirect jump)
             OPCODE_JALR: begin
                 case (insn_funct3)
                     3'b000  /* JALR */: begin
                         next_wr = 1;
-                        next_rd = ppc+8;
-                        npc = (rs1_value + imm_i_sext) & ~32'b1;
+                        next_rd = ex_pc + 8;
                     end
                     default: illinsn = 1;
                 endcase
-                if (npc & 32'b11) begin
-                    illinsn = 1;
-                    npc = npc & ~32'b11;
-                end
             end
-            // branch instructions: Branch If Equal, Branch Not Equal, Branch Less Than, Branch Greater Than, Branch Less Than Unsigned, Branch Greater Than Unsigned
-            // label: branch instructions happen here
-            // todo: i think branch takes two cycles to execute, so 2 addis happen and then it jumps one beyond what it was expecting
-            // soln: branch should happen in one cycle, which it doesn't right now..
-            // beq takes two cycles on the sim, like straight up stalls the processor (should be the nop)
+            // branch instructions: Branch If Equal, Branch Not Equal, Branch
+            // Less Than, Branch Greater or Equal, Branch Less Than Unsigned,
+            // Branch Greater or Equal Unsigned
+            //
+            // The comparison and the npc redirect are done in the ID block
+            // below, keyed on `id_insn` (= `ir`), because a taken branch has
+            // to be signalled from the second pipeline stage to get a single
+            // delay slot.  Resolving it here, from `insn` (= `ex_insn`), is
+            // one stage too late: the instruction after the delay slot has
+            // already been fetched and would also retire, giving two delay
+            // slots.  This case therefore only validates the encoding.
             OPCODE_BRANCH: begin
-                case (id_insn_funct3)
-                    3'b000  /* BEQ  */: begin
-                        if (id_rs1_value == id_rs2_value) npc = pc + imm_b_sext;
-                    end
-                    3'b001  /* BNE  */: begin
-                        if (id_rs1_value != id_rs2_value) npc = ppc + imm_b_sext;
-                    end
-                    3'b100  /* BLT  */: begin
-                        if ($signed(id_rs1_value) < $signed(id_rs2_value)) npc = ppc + imm_b_sext;
-                    end
-                    3'b101  /* BGE  */: begin
-                        if ($signed(id_rs1_value) >= $signed(id_rs2_value)) npc = ppc + imm_b_sext;
-                    end
-                    3'b110  /* BLTU */: begin
-                        if (id_rs1_value < id_rs2_value) npc = ppc + imm_b_sext;
-                    end
-                    3'b111  /* BGEU */: begin
-                        if (id_rs1_value >= id_rs2_value) npc = ppc + imm_b_sext;
-                    end
+                case (insn_funct3)
+                    3'b000, 3'b001, 3'b100, 3'b101, 3'b110, 3'b111: ;
                     default: illinsn = 1;
                 endcase
-                if (npc & 32'b11) begin
-                    illinsn = 1;
-                    npc = npc & ~32'b11;
-                end
             end
             // load from memory into rd: Load Byte, Load Halfword, Load Word, Load Byte Unsigned, Load Halfword Unsigned
             OPCODE_LOAD: begin
@@ -445,6 +492,64 @@ module nerv #(
             default: illinsn = 1;
         endcase
 
+        // ---------------------------------------------------------------
+        // ID STAGE: control-transfer resolution (branches and jumps)
+        //
+        // Keyed on `id_insn` = `ir`, the instruction in the second (ID)
+        // stage, so the fetch is redirected while the branch is still in
+        // ID.  By then the delay-slot instruction has already been
+        // fetched, so it survives the redirect and retires: exactly ONE
+        // delay slot, with no bubble and no flush.
+        //
+        // The offset base is `ppc`.  When an instruction is in ID, `pc` has
+        // already advanced to the delay-slot address and `ppc` holds the
+        // instruction's own address - and a RISC-V branch offset is
+        // relative to the branch instruction itself.
+        // ---------------------------------------------------------------
+        br_a = id_rs1_value;
+        br_b = id_rs2_value;
+        if (next_wr && !mem_rd_enable_q && (insn_rd != 5'd0)) begin
+            if (insn_rd == id_insn_rs1) br_a = next_rd;
+            if (insn_rd == id_insn_rs2) br_b = next_rd;
+        end
+
+        if (id_insn_opcode == OPCODE_BRANCH) begin
+            case (id_insn_funct3)
+                3'b000  /* BEQ  */: if (br_a == br_b) npc = ppc + id_imm_b_sext;
+                3'b001  /* BNE  */: if (br_a != br_b) npc = ppc + id_imm_b_sext;
+                3'b100  /* BLT  */: if ($signed(br_a) <  $signed(br_b)) npc = ppc + id_imm_b_sext;
+                3'b101  /* BGE  */: if ($signed(br_a) >= $signed(br_b)) npc = ppc + id_imm_b_sext;
+                3'b110  /* BLTU */: if (br_a <  br_b) npc = ppc + id_imm_b_sext;
+                3'b111  /* BGEU */: if (br_a >= br_b) npc = ppc + id_imm_b_sext;
+                default: illinsn = 1;
+            endcase
+            if (npc & 32'b11) begin
+                illinsn = 1;
+                npc = npc & ~32'b11;
+            end
+        end
+
+        // JAL / JALR: no condition, redirect immediately
+        if (id_insn_opcode == OPCODE_JAL) begin
+            npc = ppc + id_imm_j_sext;
+            if (npc & 32'b11) begin
+                illinsn = 1;
+                npc = npc & ~32'b11;
+            end
+        end
+        if (id_insn_opcode == OPCODE_JALR) begin
+            case (id_insn_funct3)
+                3'b000  /* JALR */: begin
+                    npc = (br_a + id_imm_i_sext) & ~32'b1;
+                    if (npc & 32'b11) begin
+                        illinsn = 1;
+                        npc = npc & ~32'b11;
+                    end
+                end
+                default: illinsn = 1;
+            endcase
+        end
+
         // if last cycle was a memory read, then this cycle is the 2nd part of it and imem_data will not be a valid instruction
         if (mem_rd_enable_q) begin
             npc = pc;
@@ -484,6 +589,50 @@ module nerv #(
                 mem_rdata = mem_rdata[15:0];
             end
         endcase
+    end
+
+    // ---------------------------------------------------------------
+    // Optional execution trace, for lab-book / GTKWave cross-checking.
+    // It prints, once per clock, the instruction that is in EX and the
+    // address it was actually fetched from (ex_pc).  Set TRACE = 0 to
+    // silence it (the `if` is constant so synthesis drops it entirely).
+    // ---------------------------------------------------------------
+    localparam bit TRACE = 1'b1;
+
+    logic [31:0] trace_cycles;
+    always @(posedge clock) begin
+        if (reset) trace_cycles <= 0;
+        else       trace_cycles <= trace_cycles + 32'd1;
+    end
+
+    function automatic [8*24-1:0] mnemo(input [31:0] i);
+        begin
+            case (i[6:0])
+                7'b0110011: mnemo = "ALU-reg";
+                7'b0010011: mnemo = "ALU-imm";
+                7'b0000011: mnemo = "LOAD";
+                7'b0100011: mnemo = "STORE";
+                7'b1100011: mnemo = "BRANCH";
+                7'b1101111: mnemo = "JAL";
+                7'b1100111: mnemo = "JALR";
+                7'b0110111: mnemo = "LUI";
+                7'b0010111: mnemo = "AUIPC";
+                7'b1110011: mnemo = "SYSTEM/ebreak";
+                7'b0000000: mnemo = "nop?";
+                default:    mnemo = "?";
+            endcase
+        end
+    endfunction
+
+    always @(posedge clock) begin
+        if (TRACE && !reset && !reset_q) begin
+            $write("cyc=%0d  pc=0x%08x | ID: ppc=0x%08x ir=0x%08x %0s",
+                   trace_cycles, pc, ppc, ir, mnemo(ir));
+            if (ir[6:0] == 7'b1100011)
+                $write("  a=%0d b=%0d -> npc=0x%08x", br_a, br_b, npc);
+            $write(" | EX: ex_pc=0x%08x ex_insn=0x%08x", ex_pc, ex_insn);
+            $display("");
+        end
     end
 
     // every cycle
