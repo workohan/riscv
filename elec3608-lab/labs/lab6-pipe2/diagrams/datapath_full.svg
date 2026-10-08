@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1180" viewBox="0 0 2560 1180">
+<defs><marker id="arw" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="context-stroke"/></marker></defs>
+<rect width="2560" height="1180" fill="white"/>
+<text x="1280.0" y="34" font-size="26" text-anchor="middle" fill="#111827" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">Pipelined nerv — complete datapath with control signals</text>
+<text x="1280.0" y="66" font-size="13" text-anchor="middle" fill="#9ca3af" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">signal names are those of nerv.sv</text>
+<rect x="660" y="190" width="20" height="700" rx="10" fill="#f5d0e0" stroke="none" stroke-width="1.5"/>
+<rect x="1430" y="190" width="20" height="700" rx="10" fill="#f5d0e0" stroke="none" stroke-width="1.5"/>
+<text x="340" y="920" font-size="17" text-anchor="middle" fill="#7c1d6f" font-family="DejaVu Sans, sans-serif" font-weight="bold" font-style="italic" dominant-baseline="central">I-Fetch (IF)</text>
+<text x="1045" y="920" font-size="17" text-anchor="middle" fill="#7c1d6f" font-family="DejaVu Sans, sans-serif" font-weight="bold" font-style="italic" dominant-baseline="central">Decode, Reg. Fetch (ID)</text>
+<text x="2000" y="920" font-size="17" text-anchor="middle" fill="#7c1d6f" font-family="DejaVu Sans, sans-serif" font-weight="bold" font-style="italic" dominant-baseline="central">Execute / Memory / Write-Back</text>
+<polygon points="70,380 200,411.2 200,468.8 70,500" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/>
+<text x="114.2" y="440.0" font-size="11" text-anchor="middle" fill="#4c1d95" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">npc
+MUX</text>
+<text x="20" y="350" font-size="11" text-anchor="start" fill="#2563eb" font-family="Liberation Mono, monospace" dominant-baseline="central">reset</text>
+<polyline points="22,372 68,372" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-dasharray="5" marker-end="url(#arw)" stroke-linejoin="round"/>
+<polyline points="22,485 68,485" fill="none" stroke="#b45309" stroke-width="3" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="24" y="466" font-size="11" text-anchor="start" fill="#b45309" font-family="Liberation Mono, monospace" dominant-baseline="central">target</text>
+<rect x="180" y="190" width="110" height="56" rx="8" fill="#e8f0f8" stroke="#20456b" stroke-width="2"/>
+<text x="235" y="218" font-size="14" text-anchor="middle" fill="#20456b" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">+ 4</text>
+<polyline points="235,246 235,376" fill="none" stroke="#1f2937" stroke-width="1.8" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="246" y="300" font-size="11" text-anchor="start" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">pc+4</text>
+<rect x="300" y="360" width="70" height="170" rx="8" fill="#fdf2f8" stroke="#9d174d" stroke-width="2"/>
+<text x="331.0" y="445.0" font-size="15" text-anchor="middle" fill="#9d174d" font-family="Liberation Mono, monospace" font-weight="bold" transform="rotate(-90 331.0 445.0)" dominant-baseline="central">pc</text>
+<polygon points="329.0,511 341.0,511 335.0,521" fill="#9d174d" stroke="#9d174d" stroke-width="1"/>
+<polyline points="205,440 298,440" fill="none" stroke="#1f2937" stroke-width="2" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="250" y="424" font-size="11" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">npc</text>
+<polyline points="335,360 335,260 292,260" fill="none" stroke="#1f2937" stroke-width="1.6" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="348" y="330" font-size="11" text-anchor="start" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">pc</text>
+<rect x="430" y="350" width="200" height="200" rx="8" fill="#3b6ea5" stroke="#20456b" stroke-width="2"/>
+<text x="530.0" y="370" font-size="14" text-anchor="middle" fill="white" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">Inst. Memory</text>
+<text x="530.0" y="394" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">imem_addr   (in)</text>
+<text x="530.0" y="410" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">imem_data   (out)</text>
+<polyline points="370,445 428,445" fill="none" stroke="#1f2937" stroke-width="2" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="399" y="429" font-size="10" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">imem_addr</text>
+<rect x="300" y="620" width="70" height="170" rx="8" fill="#fdf2f8" stroke="#9d174d" stroke-width="2"/>
+<text x="331.0" y="705.0" font-size="15" text-anchor="middle" fill="#9d174d" font-family="Liberation Mono, monospace" font-weight="bold" transform="rotate(-90 331.0 705.0)" dominant-baseline="central">ppc</text>
+<text x="335.0" y="804" font-size="10" text-anchor="middle" fill="#9ca3af" font-family="Liberation Mono, monospace" dominant-baseline="central">ppc &lt;= pc</text>
+<polygon points="329.0,771 341.0,771 335.0,781" fill="#9d174d" stroke="#9d174d" stroke-width="1"/>
+<polyline points="335,530 335,618" fill="none" stroke="#1f2937" stroke-width="1.8" marker-end="url(#arw)" stroke-linejoin="round"/>
+<rect x="686" y="350" width="70" height="170" rx="8" fill="#fdf2f8" stroke="#9d174d" stroke-width="2"/>
+<text x="717.0" y="435.0" font-size="15" text-anchor="middle" fill="#9d174d" font-family="Liberation Mono, monospace" font-weight="bold" transform="rotate(-90 717.0 435.0)" dominant-baseline="central">ir</text>
+<text x="721.0" y="534" font-size="10" text-anchor="middle" fill="#9ca3af" font-family="Liberation Mono, monospace" dominant-baseline="central">IF/ID</text>
+<polygon points="715.0,501 727.0,501 721.0,511" fill="#9d174d" stroke="#9d174d" stroke-width="1"/>
+<polyline points="632,435 684,435" fill="none" stroke="#1f2937" stroke-width="2" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="658" y="419" font-size="10" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">imem_data</text>
+<rect x="810" y="265" width="270" height="300" rx="8" fill="#3b6ea5" stroke="#20456b" stroke-width="2"/>
+<text x="945.0" y="285" font-size="14" text-anchor="middle" fill="white" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">GPRs</text>
+<text x="945.0" y="309" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">we    next_wr</text>
+<text x="945.0" y="325" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">— ID read —</text>
+<text x="945.0" y="341" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">rs1   id_insn_rs1</text>
+<text x="945.0" y="357" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">rs2   id_insn_rs2</text>
+<text x="945.0" y="373" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">rd1   id_rs1_value</text>
+<text x="945.0" y="389" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">rd2   id_rs2_value</text>
+<text x="945.0" y="405" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">— EX read —</text>
+<text x="945.0" y="421" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">rs1   insn_rs1</text>
+<text x="945.0" y="437" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">rs2   insn_rs2</text>
+<text x="945.0" y="453" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">rd1   rs1_value</text>
+<text x="945.0" y="469" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">rd2   rs2_value</text>
+<text x="945.0" y="485" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">— write —</text>
+<text x="945.0" y="501" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">wa    insn_rd</text>
+<text x="945.0" y="517" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">wd    next_rd</text>
+<rect x="810" y="585" width="200" height="90" rx="8" fill="#e8f0f8" stroke="#20456b" stroke-width="2"/>
+<text x="910" y="610" font-size="14" text-anchor="middle" fill="#20456b" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">Imm gen</text>
+<text x="910" y="635" font-size="11" text-anchor="middle" fill="#20456b" font-family="Liberation Mono, monospace" dominant-baseline="central">id_imm_b / i / j</text>
+<text x="910" y="655" font-size="11" text-anchor="middle" fill="#20456b" font-family="Liberation Mono, monospace" dominant-baseline="central">-&gt; _sext</text>
+<rect x="1090" y="380" width="290" height="290" rx="10" fill="#fde68a" stroke="#b45309" stroke-width="2.5"/>
+<text x="1235" y="406" font-size="15" text-anchor="middle" fill="#7c2d12" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">Control transfer</text>
+<text x="1235" y="430" font-size="11" text-anchor="middle" fill="#7c2d12" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">branch compare + target adder</text>
+<text x="1235" y="458" font-size="11" text-anchor="middle" fill="#7c2d12" font-family="Liberation Mono, monospace" dominant-baseline="central">in:  id_insn, br_a / br_b,</text>
+<text x="1235" y="476" font-size="11" text-anchor="middle" fill="#7c2d12" font-family="Liberation Mono, monospace" dominant-baseline="central">     id_imm_*, ppc</text>
+<text x="1235" y="502" font-size="11" text-anchor="middle" fill="#7c2d12" font-family="Liberation Mono, monospace" dominant-baseline="central">out: npc, illinsn</text>
+<text x="1235" y="532" font-size="10" text-anchor="middle" fill="#7c2d12" font-family="Liberation Mono, monospace" dominant-baseline="central">BEQ BNE BLT BGE</text>
+<text x="1235" y="550" font-size="10" text-anchor="middle" fill="#7c2d12" font-family="Liberation Mono, monospace" dominant-baseline="central">BLTU BGEU JAL JALR</text>
+<text x="1235" y="578" font-size="10" text-anchor="middle" fill="#7c2d12" font-family="Liberation Mono, monospace" dominant-baseline="central">target = ppc + id_imm_sext</text>
+<text x="1235" y="604" font-size="10" text-anchor="middle" fill="#7c2d12" font-family="Liberation Mono, monospace" dominant-baseline="central">taken -&gt; npc</text>
+<polyline points="756,400 808,400" fill="none" stroke="#1f2937" stroke-width="2" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="782" y="384" font-size="10" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">id_insn</text>
+<polyline points="756,435 790,435 790,630 808,630" fill="none" stroke="#1f2937" stroke-width="1.6" marker-end="url(#arw)" stroke-linejoin="round"/>
+<polyline points="756,470 772,470 772,545 1088,545" fill="none" stroke="#1f2937" stroke-width="1.7" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="930" y="530" font-size="10" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">id_insn (decode)</text>
+<polyline points="1080,420 1088,420" fill="none" stroke="#1f2937" stroke-width="2" marker-end="url(#arw)" stroke-linejoin="round"/>
+<polyline points="1010,630 1050,630 1050,645 1088,645" fill="none" stroke="#1f2937" stroke-width="1.8" marker-end="url(#arw)" stroke-linejoin="round"/>
+<polyline points="370,705 1235,705 1235,672" fill="none" stroke="#b45309" stroke-width="2.6" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="800" y="692" font-size="12" text-anchor="middle" fill="#b45309" font-family="Liberation Mono, monospace" dominant-baseline="central">ppc   (offset base)</text>
+<polyline points="1990,330 1990,200 1200,200 1200,378" fill="none" stroke="#7c3aed" stroke-width="2.4" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="1590" y="182" font-size="13" text-anchor="middle" fill="#7c3aed" font-family="Liberation Mono, monospace" dominant-baseline="central">next_rd   (EX → ID operand bypass)</text>
+<polyline points="1090,600 1040,600 1040,1050 40,1050 40,485 68,485" fill="none" stroke="#b45309" stroke-width="3" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="620" y="1068" font-size="13" text-anchor="middle" fill="#b45309" font-family="Liberation Mono, monospace" dominant-baseline="central">npc = ppc + imm   (taken branch / jump)</text>
+<rect x="1456" y="350" width="70" height="180" rx="8" fill="#fdf2f8" stroke="#9d174d" stroke-width="2"/>
+<text x="1487.0" y="440.0" font-size="15" text-anchor="middle" fill="#9d174d" font-family="Liberation Mono, monospace" font-weight="bold" transform="rotate(-90 1487.0 440.0)" dominant-baseline="central">ex_insn</text>
+<text x="1491.0" y="544" font-size="10" text-anchor="middle" fill="#9ca3af" font-family="Liberation Mono, monospace" dominant-baseline="central">ID/EX</text>
+<polygon points="1485.0,511 1497.0,511 1491.0,521" fill="#9d174d" stroke="#9d174d" stroke-width="1"/>
+<polyline points="1385,435 1454,435" fill="none" stroke="#1f2937" stroke-width="2" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="1417" y="419" font-size="10" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">ir</text>
+<rect x="1456" y="570" width="70" height="180" rx="8" fill="#fdf2f8" stroke="#9d174d" stroke-width="2"/>
+<text x="1487.0" y="660.0" font-size="15" text-anchor="middle" fill="#9d174d" font-family="Liberation Mono, monospace" font-weight="bold" transform="rotate(-90 1487.0 660.0)" dominant-baseline="central">ex_pc</text>
+<text x="1491.0" y="764" font-size="10" text-anchor="middle" fill="#9ca3af" font-family="Liberation Mono, monospace" dominant-baseline="central">ex_pc1 / ex_pc</text>
+<polygon points="1485.0,731 1497.0,731 1491.0,741" fill="#9d174d" stroke="#9d174d" stroke-width="1"/>
+<polyline points="1385,660 1454,660" fill="none" stroke="#b45309" stroke-width="1.8" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="1470" y="800" font-size="10" text-anchor="middle" fill="#9ca3af" font-family="Liberation Mono, monospace" dominant-baseline="central">held while mem_rd_enable_q  (load stall)</text>
+<rect x="1590" y="280" width="250" height="170" rx="8" fill="#e8f0f8" stroke="#20456b" stroke-width="2"/>
+<text x="1715" y="306" font-size="15" text-anchor="middle" fill="#20456b" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">EX control</text>
+<text x="1715" y="332" font-size="11" text-anchor="middle" fill="#20456b" font-family="Liberation Mono, monospace" dominant-baseline="central">decode insn</text>
+<text x="1715" y="356" font-size="10" text-anchor="middle" fill="#20456b" font-family="Liberation Mono, monospace" dominant-baseline="central">out:  next_wr  next_rd</text>
+<text x="1715" y="376" font-size="10" text-anchor="middle" fill="#20456b" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rd_enable  mem_rd_reg</text>
+<text x="1715" y="394" font-size="10" text-anchor="middle" fill="#20456b" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rd_func  mem_wr_enable</text>
+<text x="1715" y="412" font-size="10" text-anchor="middle" fill="#20456b" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_wr_strb   illinsn</text>
+<text x="1715" y="432" font-size="10" text-anchor="middle" fill="#20456b" font-family="Liberation Mono, monospace" dominant-baseline="central">WB mux select</text>
+<polyline points="1526,420 1588,420" fill="none" stroke="#1f2937" stroke-width="2" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="1557" y="404" font-size="10" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">insn</text>
+<polygon points="1900,330 1996.0,330 2080,430.0 1996.0,530 1900,530" fill="#e8f0f8" stroke="#20456b" stroke-width="2"/>
+<text x="1972.0" y="430.0" font-size="14" text-anchor="middle" fill="#20456b" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">ALU</text>
+<polyline points="1840,340 1878,340 1878,365 1898,365" fill="none" stroke="#2563eb" stroke-width="1.6" stroke-dasharray="6" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="1908" y="348" font-size="10" text-anchor="start" fill="#2563eb" font-family="Liberation Mono, monospace" dominant-baseline="central">alu op</text>
+<polyline points="1080,300 1120,300 1120,262 1950,262 1950,328" fill="none" stroke="#1f2937" stroke-width="1.8" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="1520" y="248" font-size="11" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">rs1_value / rs2_value   (GPR read, ex_insn fields)</text>
+<rect x="2140" y="310" width="210" height="200" rx="8" fill="#3b6ea5" stroke="#20456b" stroke-width="2"/>
+<text x="2245.0" y="330" font-size="14" text-anchor="middle" fill="white" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">Data Memory</text>
+<text x="2245.0" y="354" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">dmem_addr</text>
+<text x="2245.0" y="370" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">dmem_wstrb</text>
+<text x="2245.0" y="386" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">dmem_wdata</text>
+<text x="2245.0" y="402" font-size="11" text-anchor="middle" fill="#e5eef7" font-family="Liberation Mono, monospace" dominant-baseline="central">dmem_rdata</text>
+<polyline points="2080,390 2138,390" fill="none" stroke="#1f2937" stroke-width="1.8" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="2109" y="374" font-size="10" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">alu_out</text>
+<polygon points="2400,360 2520,388.6 2520,441.4 2400,470" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/>
+<text x="2440.8" y="415.0" font-size="11" text-anchor="middle" fill="#4c1d95" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">WB
+MUX</text>
+<polyline points="2350,440 2398,440" fill="none" stroke="#1f2937" stroke-width="1.8" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="2374" y="424" font-size="10" text-anchor="middle" fill="#7c1d6f" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rdata</text>
+<polyline points="1990,530 1990,560 2440,560 2440,472" fill="none" stroke="#1f2937" stroke-width="1.8" marker-end="url(#arw)" stroke-linejoin="round"/>
+<polyline points="2520,415 2540,415 2540,960 940,960 940,567" fill="none" stroke="#15803d" stroke-width="2.4" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="1740" y="978" font-size="13" text-anchor="middle" fill="#15803d" font-family="Liberation Mono, monospace" dominant-baseline="central">next_rd / mem_rdata  →  GPRs wd</text>
+<polyline points="1840,450 2100,450 2100,490 2138,490" fill="none" stroke="#2563eb" stroke-width="1.6" stroke-dasharray="6" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="2010" y="506" font-size="11" text-anchor="middle" fill="#2563eb" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rd_enable / mem_wr_enable / mem_wr_strb</text>
+<rect x="2140" y="590" width="210" height="90" rx="8" fill="#fee2e2" stroke="#b91c1c" stroke-width="2"/>
+<text x="2245" y="616" font-size="14" text-anchor="middle" fill="#7f1d1d" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">trap</text>
+<text x="2245" y="642" font-size="10" text-anchor="middle" fill="#7f1d1d" font-family="Liberation Mono, monospace" dominant-baseline="central">illinsn -&gt; trapped</text>
+<text x="2245" y="662" font-size="10" text-anchor="middle" fill="#7f1d1d" font-family="Liberation Mono, monospace" dominant-baseline="central">trap = trapped</text>
+<polyline points="1660,450 1660,580 2200,580 2200,588" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-dasharray="6" marker-end="url(#arw)" stroke-linejoin="round"/>
+<text x="1930" y="566" font-size="11" text-anchor="middle" fill="#b91c1c" font-family="Liberation Mono, monospace" dominant-baseline="central">illinsn</text>
+<rect x="70" y="1093" width="18" height="13" rx="3" fill="#fdf2f8" stroke="#9d174d" stroke-width="1.6"/>
+<text x="94" y="1100" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">pipeline register</text>
+<rect x="212.8" y="1093" width="18" height="13" rx="3" fill="#3b6ea5" stroke="#20456b" stroke-width="1.6"/>
+<text x="236.8" y="1100" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">functional unit</text>
+<rect x="342.8" y="1093" width="18" height="13" rx="3" fill="#fde68a" stroke="#b45309" stroke-width="1.6"/>
+<text x="366.8" y="1100" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">control-transfer path</text>
+<rect x="511.20000000000005" y="1093" width="18" height="13" rx="3" fill="none" stroke="#2563eb" stroke-width="1.6"/>
+<text x="535.2" y="1100" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">control signal</text>
+<rect x="634.8000000000001" y="1093" width="18" height="13" rx="3" fill="none" stroke="#15803d" stroke-width="1.6"/>
+<text x="658.8000000000001" y="1100" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">write-back</text>
+<rect x="732.8000000000001" y="1093" width="18" height="13" rx="3" fill="none" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="756.8000000000001" y="1100" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX→ID bypass</text>
+</svg>

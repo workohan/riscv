@@ -9,7 +9,7 @@
 
 
 /* Special note: see Unprivileged ISR pg 49, indicating the assembly writers created their own
-   instruction, that is not consistent with the ISA */
+   instruction, that is not consistent with t General question he ISA */
 .section .text
 .global main
 .global _start

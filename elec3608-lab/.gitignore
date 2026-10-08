@@ -102,3 +102,6 @@ lab7-spike/docker/hello
 .netrwhist
 *.bash_history
 .bash_history
+
+.dbus/session-bus/
+.config/gtk-2.0/

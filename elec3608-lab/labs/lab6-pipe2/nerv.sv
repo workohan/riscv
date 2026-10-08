@@ -107,24 +107,24 @@ module nerv #(
     // offsets are resolved in ID against `ppc` (see the branch case).
     // ---------------------------------------------------------------
     logic [31:0] ex_insn;
-    logic [31:0] ex_pc1;     // pc delayed by one fetch cycle
-    logic [31:0] ex_pc;      // pc delayed by two fetch cycles == address in EX
+    logic [31:0] ex_pc1;  // pc delayed by one fetch cycle
+    logic [31:0] ex_pc;  // pc delayed by two fetch cycles == address in EX
     always @(posedge clock) begin
         // ir <= imem_data;  // label: ir is set here, represents the instruction for the id stage
         // ex_insn <= ir; // label: the instruction for the execute stage
         if (reset) begin
-                   ir <= 32'h00000013;       // NOP
-                   ex_insn <= 32'h00000013;  // NOP
-                   ex_pc1 <= 32'h00000000;
-                   ex_pc <= 32'h00000000;
-               end else if (mem_rd_enable_q) begin
-                   // Stall: do not update ex_insn so it replays after memory load
-               end else begin
-                   ir <= imem_data;
-                   ex_insn <= ir;
-                   ex_pc1 <= pc;
-                   ex_pc <= ex_pc1;
-               end
+            ir      <= 32'h00000013;  // NOP
+            ex_insn <= 32'h00000013;  // NOP
+            ex_pc1  <= 32'h00000000;
+            ex_pc   <= 32'h00000000;
+        end else if (mem_rd_enable_q) begin
+            // Stall: do not update ex_insn so it replays after memory load
+        end else begin
+            ir <= imem_data;
+            ex_insn <= ir;
+            ex_pc1 <= pc;
+            ex_pc <= ex_pc1;
+        end
 
     end
 
@@ -141,7 +141,7 @@ module nerv #(
     // retires normally - no bubble and no flush is required.
     // ---------------------------------------------------------------
     wire [31:0] id_insn;
-    assign id_insn = ir; // label: just an alias
+    assign id_insn = ir;  // label: just an alias
 
     // split R-type instruction - see section 2.2 of RiscV spec
     //
@@ -149,12 +149,12 @@ module nerv #(
     // below they become implicit 1-bit nets, so e.g. `id_insn_opcode` would
     // only ever carry bit 0 of the real opcode and the ID-stage control
     // transfer test would never match OPCODE_BRANCH.
-    wire [ 6:0] id_insn_funct7;
-    wire [ 4:0] id_insn_rs2;
-    wire [ 4:0] id_insn_rs1;
-    wire [ 2:0] id_insn_funct3;
-    wire [ 4:0] id_insn_rd;
-    wire [ 6:0] id_insn_opcode;
+    wire [6:0] id_insn_funct7;
+    wire [4:0] id_insn_rs2;
+    wire [4:0] id_insn_rs1;
+    wire [2:0] id_insn_funct3;
+    wire [4:0] id_insn_rd;
+    wire [6:0] id_insn_opcode;
     assign {id_insn_funct7, id_insn_rs2, id_insn_rs1, id_insn_funct3, id_insn_rd, id_insn_opcode} = id_insn; // label: split for id
 
     // B - conditionals
@@ -172,8 +172,9 @@ module nerv #(
 
     // J - unconditional jumps
     wire [20:0] id_imm_j;
-    assign {id_imm_j[20], id_imm_j[10:1], id_imm_j[11], id_imm_j[19:12], id_imm_j[0]} =
-        {id_insn[31:12], 1'b0};
+    assign {id_imm_j[20], id_imm_j[10:1], id_imm_j[11], id_imm_j[19:12], id_imm_j[0]} = {
+        id_insn[31:12], 1'b0
+    };
     wire [31:0] id_imm_j_sext = $signed(id_imm_j);
 
 
@@ -192,7 +193,7 @@ module nerv #(
 
     // ---------- FOR EX
     logic [31:0] insn;
-    assign insn = ex_insn; // label: move instruction decoding to stage 2 for simplicity
+    assign insn = ex_insn;  // label: move instruction decoding to stage 2 for simplicity
 
     // rs1 and rs2 are source for the instruction
     wire [31:0] rs1_value = !insn_rs1 ? 0 : regfile[insn_rs1];
@@ -311,9 +312,9 @@ module nerv #(
                 // `ex_pc` is this instruction's own address
                 next_rd = (insn[31:12] << 12) + ex_pc;
             end
+
             // Jump And Link (unconditional jump)
-            //
-            // The fetch redirect happens in the ID block below, so the jump
+            // Label: The fetch redirect happens in the ID block below, so the jump
             // gets the same single delay slot as a branch.  Here we only
             // produce the link value: the jump is in EX now, so `ex_pc` is
             // its own address and the return address is past the delay slot.
@@ -331,10 +332,8 @@ module nerv #(
                     default: illinsn = 1;
                 endcase
             end
-            // branch instructions: Branch If Equal, Branch Not Equal, Branch
-            // Less Than, Branch Greater or Equal, Branch Less Than Unsigned,
-            // Branch Greater or Equal Unsigned
-            //
+
+            // label: branch stuff
             // The comparison and the npc redirect are done in the ID block
             // below, keyed on `id_insn` (= `ir`), because a taken branch has
             // to be signalled from the second pipeline stage to get a single
@@ -517,9 +516,9 @@ module nerv #(
             case (id_insn_funct3)
                 3'b000  /* BEQ  */: if (br_a == br_b) npc = ppc + id_imm_b_sext;
                 3'b001  /* BNE  */: if (br_a != br_b) npc = ppc + id_imm_b_sext;
-                3'b100  /* BLT  */: if ($signed(br_a) <  $signed(br_b)) npc = ppc + id_imm_b_sext;
+                3'b100  /* BLT  */: if ($signed(br_a) < $signed(br_b)) npc = ppc + id_imm_b_sext;
                 3'b101  /* BGE  */: if ($signed(br_a) >= $signed(br_b)) npc = ppc + id_imm_b_sext;
-                3'b110  /* BLTU */: if (br_a <  br_b) npc = ppc + id_imm_b_sext;
+                3'b110  /* BLTU */: if (br_a < br_b) npc = ppc + id_imm_b_sext;
                 3'b111  /* BGEU */: if (br_a >= br_b) npc = ppc + id_imm_b_sext;
                 default: illinsn = 1;
             endcase
@@ -529,7 +528,7 @@ module nerv #(
             end
         end
 
-        // JAL / JALR: no condition, redirect immediately
+        // JAL / JALR: stuff for 1 delay slot branching
         if (id_insn_opcode == OPCODE_JAL) begin
             npc = ppc + id_imm_j_sext;
             if (npc & 32'b11) begin
@@ -602,7 +601,7 @@ module nerv #(
     logic [31:0] trace_cycles;
     always @(posedge clock) begin
         if (reset) trace_cycles <= 0;
-        else       trace_cycles <= trace_cycles + 32'd1;
+        else trace_cycles <= trace_cycles + 32'd1;
     end
 
     function automatic [8*24-1:0] mnemo(input [31:0] i);
@@ -626,10 +625,9 @@ module nerv #(
 
     always @(posedge clock) begin
         if (TRACE && !reset && !reset_q) begin
-            $write("cyc=%0d  pc=0x%08x | ID: ppc=0x%08x ir=0x%08x %0s",
-                   trace_cycles, pc, ppc, ir, mnemo(ir));
-            if (ir[6:0] == 7'b1100011)
-                $write("  a=%0d b=%0d -> npc=0x%08x", br_a, br_b, npc);
+            $write("cyc=%0d  pc=0x%08x | ID: ppc=0x%08x ir=0x%08x %0s", trace_cycles, pc, ppc, ir,
+                   mnemo(ir));
+            if (ir[6:0] == 7'b1100011) $write("  a=%0d b=%0d -> npc=0x%08x", br_a, br_b, npc);
             $write(" | EX: ex_pc=0x%08x ex_insn=0x%08x", ex_pc, ex_insn);
             $display("");
         end

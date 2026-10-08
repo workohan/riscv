@@ -1,0 +1,251 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1491" viewBox="0 0 1700 1491">
+<defs><marker id="arw" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="context-stroke"/></marker></defs>
+<rect width="1700" height="1491" fill="white"/>
+<text x="850.0" y="34" font-size="24" text-anchor="middle" fill="#111827" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">nerv.sv — every signal, grouped by path</text>
+<text x="850.0" y="64" font-size="13" text-anchor="middle" fill="#9ca3af" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">control signals are highlighted; width / driver / meaning</text>
+<text x="50" y="104" font-size="13" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">signal</text>
+<text x="470" y="104" font-size="13" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">w</text>
+<text x="660" y="104" font-size="13" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">driven by</text>
+<text x="900" y="104" font-size="13" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">meaning</text>
+<polyline points="40,118 1660,118" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="40" y="121" width="1620" height="22" rx="4" fill="#eef2f7" stroke="none" stroke-width="1.5"/>
+<text x="50" y="132" font-size="12" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">next-PC  / fetch</text>
+<rect x="40" y="151" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="161" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">npc</text>
+<text x="510" y="161" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="161" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID control-transfer (or pc+4)</text>
+<text x="900" y="161" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">next fetch address -&gt; pc</text>
+<text x="50" y="182" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">imem_addr</text>
+<text x="510" y="182" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="182" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">npc (held via imem_addr_q)</text>
+<text x="900" y="182" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">instruction memory address</text>
+<text x="50" y="203" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">imem_data</text>
+<text x="510" y="203" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="203" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">instruction memory</text>
+<text x="900" y="203" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">fetched instruction word</text>
+<text x="50" y="224" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">imem_addr_q</text>
+<text x="510" y="224" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="224" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">registered imem_addr</text>
+<text x="900" y="224" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">address held during load / trap</text>
+<rect x="40" y="236" width="1620" height="22" rx="4" fill="#eef2f7" stroke="none" stroke-width="1.5"/>
+<text x="50" y="247" font-size="12" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">pipeline registers</text>
+<text x="50" y="276" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">pc</text>
+<text x="510" y="276" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="276" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">npc</text>
+<text x="900" y="276" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">fetch pointer (drives imem_addr)</text>
+<text x="50" y="297" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">ppc</text>
+<text x="510" y="297" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="297" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">pc</text>
+<text x="900" y="297" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID instruction's own address = branch offset base</text>
+<text x="50" y="318" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">ir</text>
+<text x="510" y="318" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="318" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">imem_data</text>
+<text x="900" y="318" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">IF/ID instruction register</text>
+<text x="50" y="339" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">ex_insn</text>
+<text x="510" y="339" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="339" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ir</text>
+<text x="900" y="339" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID/EX instruction register</text>
+<text x="50" y="360" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">ex_pc1</text>
+<text x="510" y="360" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="360" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">pc</text>
+<text x="900" y="360" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">pc delayed one fetch</text>
+<text x="50" y="381" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">ex_pc</text>
+<text x="510" y="381" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="381" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ex_pc1</text>
+<text x="900" y="381" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">pc delayed two fetches = EX instruction address</text>
+<rect x="40" y="393" width="1620" height="22" rx="4" fill="#eef2f7" stroke="none" stroke-width="1.5"/>
+<text x="50" y="404" font-size="12" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">register file</text>
+<text x="50" y="433" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">regfile[0:31]</text>
+<text x="510" y="433" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="433" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">-</text>
+<text x="900" y="433" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">general-purpose registers (x0 hard-wired 0)</text>
+<text x="50" y="454" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">id_rs1_value</text>
+<text x="510" y="454" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="454" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">regfile, id_insn_rs1</text>
+<text x="900" y="454" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID operand read for branch compare</text>
+<text x="50" y="475" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">id_rs2_value</text>
+<text x="510" y="475" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="475" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">regfile, id_insn_rs2</text>
+<text x="900" y="475" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID operand read for branch compare</text>
+<text x="50" y="496" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">br_a</text>
+<text x="510" y="496" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="496" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">id_rs1_value or next_rd</text>
+<text x="900" y="496" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">bypassed operand A</text>
+<text x="50" y="517" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">br_b</text>
+<text x="510" y="517" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="517" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">id_rs2_value or next_rd</text>
+<text x="900" y="517" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">bypassed operand B</text>
+<text x="50" y="538" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">rs1_value</text>
+<text x="510" y="538" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="538" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">regfile, insn_rs1</text>
+<text x="900" y="538" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX operand read</text>
+<text x="50" y="559" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">rs2_value</text>
+<text x="510" y="559" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="559" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">regfile, insn_rs2</text>
+<text x="900" y="559" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX operand read</text>
+<rect x="40" y="570" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="580" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">next_wr</text>
+<text x="510" y="580" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="580" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX control</text>
+<text x="900" y="580" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">GPR write enable</text>
+<text x="50" y="601" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">next_rd</text>
+<text x="510" y="601" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="601" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX control</text>
+<text x="900" y="601" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">GPR write data (also the EX→ID bypass)</text>
+<rect x="40" y="613" width="1620" height="22" rx="4" fill="#eef2f7" stroke="none" stroke-width="1.5"/>
+<text x="50" y="624" font-size="12" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">load path</text>
+<rect x="40" y="643" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="653" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">mem_rd_enable</text>
+<text x="510" y="653" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="653" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX control</text>
+<text x="900" y="653" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">issue a load this cycle</text>
+<text x="50" y="674" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rd_addr</text>
+<text x="510" y="674" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="674" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">rs1_value + imm_i_sext</text>
+<text x="900" y="674" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">load address (word aligned)</text>
+<text x="50" y="695" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rd_reg</text>
+<text x="510" y="695" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">5</text>
+<text x="660" y="695" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX control (insn_rd)</text>
+<text x="900" y="695" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">load destination register</text>
+<text x="50" y="716" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rd_func</text>
+<text x="510" y="716" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">5</text>
+<text x="660" y="716" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">{addr[1:0], insn_funct3}</text>
+<text x="900" y="716" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">load size / sign select</text>
+<rect x="40" y="727" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="737" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">mem_rd_enable_q</text>
+<text x="510" y="737" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="737" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">mem_rd_enable (reg)</text>
+<text x="900" y="737" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">2nd half of read; also the stall</text>
+<text x="50" y="758" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rd_reg_q</text>
+<text x="510" y="758" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">5</text>
+<text x="660" y="758" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">mem_rd_reg (reg)</text>
+<text x="900" y="758" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">load destination, delayed</text>
+<text x="50" y="779" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rd_func_q</text>
+<text x="510" y="779" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">5</text>
+<text x="660" y="779" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">mem_rd_func (reg)</text>
+<text x="900" y="779" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">load selector, delayed</text>
+<text x="50" y="800" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_rdata</text>
+<text x="510" y="800" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="800" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">dmem_rdata</text>
+<text x="900" y="800" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">load result after size/sign extraction</text>
+<rect x="40" y="812" width="1620" height="22" rx="4" fill="#eef2f7" stroke="none" stroke-width="1.5"/>
+<text x="50" y="823" font-size="12" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">store path</text>
+<rect x="40" y="842" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="852" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">mem_wr_enable</text>
+<text x="510" y="852" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="852" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX control</text>
+<text x="900" y="852" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">issue a store this cycle</text>
+<text x="50" y="873" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_wr_addr</text>
+<text x="510" y="873" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="873" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">rs1_value + imm_s_sext</text>
+<text x="900" y="873" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">store address (word aligned)</text>
+<text x="50" y="894" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">mem_wr_data</text>
+<text x="510" y="894" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="894" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">rs2_value</text>
+<text x="900" y="894" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">store data, shifted into byte lane</text>
+<rect x="40" y="905" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="915" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">mem_wr_strb</text>
+<text x="510" y="915" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">4</text>
+<text x="660" y="915" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX control + addr[1:0]</text>
+<text x="900" y="915" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">byte write strobes</text>
+<rect x="40" y="927" width="1620" height="22" rx="4" fill="#eef2f7" stroke="none" stroke-width="1.5"/>
+<text x="50" y="938" font-size="12" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">data memory port</text>
+<rect x="40" y="957" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="967" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">dmem_valid</text>
+<text x="510" y="967" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="967" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">mem_wr_enable | mem_rd_enable</text>
+<text x="900" y="967" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">memory request valid</text>
+<text x="50" y="988" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">dmem_addr</text>
+<text x="510" y="988" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="988" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">mem_wr_addr | mem_rd_addr</text>
+<text x="900" y="988" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">memory address</text>
+<text x="50" y="1009" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">dmem_wstrb</text>
+<text x="510" y="1009" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">4</text>
+<text x="660" y="1009" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">mem_wr_strb | 4'h0</text>
+<text x="900" y="1009" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">memory write strobes</text>
+<text x="50" y="1030" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">dmem_wdata</text>
+<text x="510" y="1030" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="1030" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">mem_wr_data</text>
+<text x="900" y="1030" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">memory write data</text>
+<text x="50" y="1051" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">dmem_rdata</text>
+<text x="510" y="1051" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="1051" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">data memory</text>
+<text x="900" y="1051" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">memory read data</text>
+<rect x="40" y="1063" width="1620" height="22" rx="4" fill="#eef2f7" stroke="none" stroke-width="1.5"/>
+<text x="50" y="1074" font-size="12" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">trap / reset</text>
+<rect x="40" y="1093" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="1103" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">illinsn</text>
+<text x="510" y="1103" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="1103" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX control (bad opcode) | ID misaligned</text>
+<text x="900" y="1103" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">illegal instruction / misaligned target</text>
+<rect x="40" y="1114" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="1124" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">trapped</text>
+<text x="510" y="1124" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="1124" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">sticky on illinsn</text>
+<text x="900" y="1124" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">processor has trapped</text>
+<rect x="40" y="1135" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="1145" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">trapped_q</text>
+<text x="510" y="1145" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="1145" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">trapped (reg)</text>
+<text x="900" y="1145" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">delayed trap</text>
+<rect x="40" y="1156" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="1166" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">trap</text>
+<text x="510" y="1166" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="1166" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">trapped</text>
+<text x="900" y="1166" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">trap output</text>
+<rect x="40" y="1177" width="1620" height="19" rx="3" fill="#eff6ff" stroke="none" stroke-width="1.5"/>
+<text x="50" y="1187" font-size="11.5" text-anchor="start" fill="#1d4ed8" font-family="Liberation Mono, monospace" font-weight="bold" dominant-baseline="central">reset_q</text>
+<text x="510" y="1187" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">1</text>
+<text x="660" y="1187" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">reset (reg)</text>
+<text x="900" y="1187" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">delayed reset</text>
+<rect x="40" y="1199" width="1620" height="22" rx="4" fill="#eef2f7" stroke="none" stroke-width="1.5"/>
+<text x="50" y="1210" font-size="12" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">decode / immediates</text>
+<text x="50" y="1239" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">insn_opcode</text>
+<text x="510" y="1239" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">7</text>
+<text x="660" y="1239" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ex_insn[6:0]</text>
+<text x="900" y="1239" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX opcode -&gt; control case</text>
+<text x="50" y="1260" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">insn_funct3</text>
+<text x="510" y="1260" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">3</text>
+<text x="660" y="1260" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ex_insn[14:12]</text>
+<text x="900" y="1260" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX ALU / branch / mem select</text>
+<text x="50" y="1281" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">insn_funct7</text>
+<text x="510" y="1281" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">7</text>
+<text x="660" y="1281" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ex_insn[31:25]</text>
+<text x="900" y="1281" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX ALU / shift select</text>
+<text x="50" y="1302" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">insn_rs1 / insn_rs2</text>
+<text x="510" y="1302" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">5</text>
+<text x="660" y="1302" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ex_insn</text>
+<text x="900" y="1302" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX source register numbers</text>
+<text x="50" y="1323" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">insn_rd</text>
+<text x="510" y="1323" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">5</text>
+<text x="660" y="1323" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ex_insn[11:7]</text>
+<text x="900" y="1323" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX destination register</text>
+<text x="50" y="1344" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">imm_i / imm_s / imm_b / imm_j</text>
+<text x="510" y="1344" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">-</text>
+<text x="660" y="1344" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ex_insn</text>
+<text x="900" y="1344" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX immediates (I, S, B, J)</text>
+<text x="50" y="1365" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">imm_*_sext</text>
+<text x="510" y="1365" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="1365" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">sign-extended</text>
+<text x="900" y="1365" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">EX immediate to ALU / memory</text>
+<text x="50" y="1386" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">id_insn_opcode</text>
+<text x="510" y="1386" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">7</text>
+<text x="660" y="1386" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ir[6:0]</text>
+<text x="900" y="1386" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID opcode -&gt; control transfer</text>
+<text x="50" y="1407" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">id_insn_rs1 / rs2 / rd / funct7</text>
+<text x="510" y="1407" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">5/5/5/7</text>
+<text x="660" y="1407" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ir</text>
+<text x="900" y="1407" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID register and funct fields</text>
+<text x="50" y="1428" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">id_insn_funct3</text>
+<text x="510" y="1428" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">3</text>
+<text x="660" y="1428" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ir[14:12]</text>
+<text x="900" y="1428" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID branch type select</text>
+<text x="50" y="1449" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">id_imm_b / id_imm_i / id_imm_j</text>
+<text x="510" y="1449" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">-</text>
+<text x="660" y="1449" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ir</text>
+<text x="900" y="1449" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID immediates</text>
+<text x="50" y="1470" font-size="11.5" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">id_imm_*_sext</text>
+<text x="510" y="1470" font-size="11.5" text-anchor="middle" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">32</text>
+<text x="660" y="1470" font-size="11" text-anchor="start" fill="#475569" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">sign-extended</text>
+<text x="900" y="1470" font-size="11" text-anchor="start" fill="#374151" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">ID target arithmetic</text>
+</svg>

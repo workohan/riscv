@@ -81,3 +81,50 @@ cd elec3608-lab/labs/lab6-pipe2/
 ls
 make firmware.out
 make firmware.out
+cd elec3608-lab/labs/lab6-pipe2/
+ls
+make firmware.out
+make firmware.out
+make firmware.out
+make firmware.out
+make firmware.out
+clear
+clear
+make firmware.out
+make nerv.asc
+make firmware.out
+clear
+make firmware.out
+make firmware.out
+make firmware.out
+make firmware.out
+make firmware.out
+make firmware.out
+make firmware.out
+make firmware.out
+clear
+make firmware.out
+make firmware.out
+cd elec3608-lab/labs/lab6-pipe2/
+ls
+make firmware.out
+make firmware.out
+clear
+make firmware.out
+make firmware.out
+cd elec3608-lab/labs/lab6-pipe2/
+make firmware.out
+make firmware.out
+make firmware.out
+make clean
+make firmware.out
+cd elec3608-lab/labs/lab6-pipe2/
+l
+ls
+make firmware
+make firmware.out
+cd elec3608-lab/labs/lab6-pipe2/
+make firmware.out
+make firmware.out
+make firmware.out\
+make firmware.out

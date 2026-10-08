@@ -3,19 +3,14 @@
 .global _start
 _start:
 
-addi x8, zero, 0
-addi x10, zero, 1
+addi x10, zero, 0
 addi x9, zero, 1
-beq x10, x9, jump_here
-addi x8, x8, 1
-addi x8, x8, 1
-addi x8, x8, 1
-addi x8, x8, 1
-addi x8, x8, 1
-addi x8, x8, 1
+addi x8, zero, 9
 
-jump_here:
-addi x7, zero, 7
+loop:
+add x10, x10, x9
+bge x8, x9, loop
+addi x9, x9, 1
 
 nop
 ebreak

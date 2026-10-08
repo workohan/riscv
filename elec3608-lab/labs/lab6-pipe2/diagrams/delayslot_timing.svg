@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1660" height="470" viewBox="0 0 1660 470">
+<defs><marker id="arw" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="context-stroke"/></marker></defs>
+<rect width="1660" height="470" fill="white"/>
+<text x="830.0" y="26" font-size="20" text-anchor="middle" fill="#111827" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">One delay slot — verified cycle trace (firmware.s)</text>
+<text x="830.0" y="52" font-size="12" text-anchor="middle" fill="#9ca3af" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">branches resolve in ID with offset base ppc; the delay slot at 0x10 executes exactly once</text>
+<text x="46" y="92" font-size="13" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">cycle</text>
+<text x="210" y="92" font-size="13" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">pc  (fetching)</text>
+<text x="540" y="92" font-size="13" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">ID:  ir  @ ppc</text>
+<text x="900" y="92" font-size="13" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">EX:  ex_insn  @ ex_pc</text>
+<text x="1230" y="92" font-size="13" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">effect</text>
+<polyline points="30,108 1630,108" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linejoin="round"/>
+<rect x="30" y="130" width="1600" height="68" rx="6" fill="#fde68a" stroke="#b45309" stroke-width="1.5"/>
+<text x="50" y="164" font-size="17" text-anchor="start" fill="#111827" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">5</text>
+<text x="210" y="154" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">0x00000010</text>
+<text x="540" y="154" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">00950e63</text>
+<text x="540" y="175" font-size="11" text-anchor="start" fill="#475569" font-family="Liberation Mono, monospace" dominant-baseline="central">ppc = 0x0000000c</text>
+<text x="900" y="154" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">00100493</text>
+<text x="900" y="175" font-size="11" text-anchor="start" fill="#475569" font-family="Liberation Mono, monospace" dominant-baseline="central">ex_pc = 0x00000008</text>
+<text x="1230" y="164" font-size="11" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">BEQ in ID  →  npc = ppc + 28 = 0x28</text>
+<rect x="30" y="206" width="1600" height="68" rx="6" fill="#fdf2f8" stroke="#9d174d" stroke-width="1.5"/>
+<text x="50" y="240" font-size="17" text-anchor="start" fill="#111827" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">6</text>
+<text x="210" y="230" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">0x00000028</text>
+<text x="540" y="230" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">00140413</text>
+<text x="540" y="251" font-size="11" text-anchor="start" fill="#475569" font-family="Liberation Mono, monospace" dominant-baseline="central">ppc = 0x00000010</text>
+<text x="900" y="230" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">00950e63</text>
+<text x="900" y="251" font-size="11" text-anchor="start" fill="#475569" font-family="Liberation Mono, monospace" dominant-baseline="central">ex_pc = 0x0000000c</text>
+<text x="1230" y="240" font-size="11" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">delay slot in ID; target 0x28 fetched</text>
+<rect x="30" y="282" width="1600" height="68" rx="6" fill="#fdf2f8" stroke="#9d174d" stroke-width="1.5"/>
+<text x="50" y="316" font-size="17" text-anchor="start" fill="#111827" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">7</text>
+<text x="210" y="306" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">0x0000002c</text>
+<text x="540" y="306" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">00700393</text>
+<text x="540" y="327" font-size="11" text-anchor="start" fill="#475569" font-family="Liberation Mono, monospace" dominant-baseline="central">ppc = 0x00000028</text>
+<text x="900" y="306" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">00140413</text>
+<text x="900" y="327" font-size="11" text-anchor="start" fill="#475569" font-family="Liberation Mono, monospace" dominant-baseline="central">ex_pc = 0x00000010</text>
+<text x="1230" y="316" font-size="11" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">delay slot retires  →  x8 = 1</text>
+<rect x="30" y="358" width="1600" height="68" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+<text x="50" y="392" font-size="17" text-anchor="start" fill="#111827" font-family="DejaVu Sans, sans-serif" font-weight="bold" dominant-baseline="central">8</text>
+<text x="210" y="382" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">0x00000030</text>
+<text x="540" y="382" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">00600313</text>
+<text x="540" y="403" font-size="11" text-anchor="start" fill="#475569" font-family="Liberation Mono, monospace" dominant-baseline="central">ppc = 0x0000002c</text>
+<text x="900" y="382" font-size="13" text-anchor="start" fill="#111827" font-family="Liberation Mono, monospace" dominant-baseline="central">00700393</text>
+<text x="900" y="403" font-size="11" text-anchor="start" fill="#475569" font-family="Liberation Mono, monospace" dominant-baseline="central">ex_pc = 0x00000028</text>
+<text x="1230" y="392" font-size="11" text-anchor="start" fill="#334155" font-family="DejaVu Sans, sans-serif" dominant-baseline="central">target retires  →  x7 = 7</text>
+<text x="830.0" y="452" font-size="12" text-anchor="middle" fill="#475569" font-family="Liberation Mono, monospace" dominant-baseline="central">fetch stream:  0x00  0x04  0x08  0x0c  0x10  →  0x28  0x2c  0x30  0x34     (0x14–0x24 are never fetched)</text>
+</svg>
