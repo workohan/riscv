@@ -38,38 +38,66 @@ module nerv #(  // THE ACTUAL CPU
 
     // we have 2 external memories
     // one is instruction memory
-    output [31:0] imem_addr,
-    input  [31:0] imem_data,
+    output [31:0] imem_addr,  // sent to external imem to get [imem_data]
+    input  [31:0] imem_data,  // got from external imem via [imem_addr]
 
     // the other is data memory
-    output        dmem_valid,
-    output [31:0] dmem_addr,
-    output [ 3:0] dmem_wstrb,
-    output [31:0] dmem_wdata,
-    input  [31:0] dmem_rdata
+    // todo: sync read and write or what?
+    output dmem_valid,  // todo: what
+    output [31:0] dmem_addr,  // address to write to; since in stage 2 must be delayed appropriately
+    output [3:0] dmem_wstrb,  // todo: what
+    output [31:0] dmem_wdata,  // i guess data to write to dmem
+    input [31:0] dmem_rdata  //
 );
-    // your processor goes here
-    // control signals,
+
+    /* @csr:intr_handler parses the 1 cycle [intr] activation and handles
+    execution*/
+    // [intr] comes in
+    // """signals""" go out to tell everything to stop what its doing rn
+    // I think this just means tell whatever is in ID to stop
 
     // @stage:pc_stuff everything relating to manipulating the program counter.
-    logic [31:0] npc; // value that pc will be upated to
-    logic [31:0] pc; // points to the the next instruction to load (i+1)
+    logic [31:0] npc;  // value that pc will be upated to
+    logic [31:0] pc;  // points to the the next instruction to load (i+1)
 
     // @stage:insd after @pc_stuff, actual stage 1 of pipeline
-    // [ir] outputs the i-th instruction
-    logic [31:0] ir;  // in: imem_data
+
+    logic [31:0] ir;  // in: imem_data, outputs the ith instruction
+    wire  [31:0] s1_inst;  // equal to [ir], just an alias
     always @(posedge clock) begin
         ir <= imem_data;
+        s1_inst <= ir;
     end
 
-    // @stage:exec after @insd, stage 2 of the pipeline
+    // @memory:regfile the cpu's registers
 
-
-
+    // @memory:csrfile uses [csrfile]
     // instantiate the CSR file
     csrfile csr_file (
     // add your code here
     );
+
+    // @stage:exec after @insd, stage 2 of the pipeline
+
+    // @memory:dmem and its associated signals. note that dmem stuff is external
+    // @decode:dmem_sigs done in @exec for convinience
+    wire [31:0] s2_inst;  // latches [s1_inst]
+    always @(posedge clock) begin
+        s2_inst <= s1_inst;
+    end
+
+    // @decode:alu_sigs happens in @exec
+
+    /* from old cpu: note that the values must be latched from the other stuff
+        assign dmem_valid = mem_wr_enable_ex || mem_rd_enable_ex;
+        assign dmem_addr  = mem_wr_enable_ex ? mem_wr_addr_ex : mem_rd_enable_ex ? mem_rd_addr_ex : 32'hx;
+        assign dmem_wstrb = mem_wr_enable_ex ? mem_wr_strb_ex : mem_rd_enable_ex ? 4'h0 : 4'hx;
+        assign dmem_wdata = mem_wr_enable_ex ? mem_wr_data_ex : 32'hx;
+    */
+
+    // [dmem_addr] is delayed by
+
+
 
 
 endmodule
@@ -98,6 +126,73 @@ module csrfile (
     input wire [31:0] ro_mcause_bits,
     output wire [31:0] rw_mscratch_bits
 );
+    // TODO:
+    /*
+    * ```mepc``` Machine exception PC
+    * ```mstatus``` Machine status
+    * ```mie``` Machine interrupt enable
+    * ```mtvec``` Machine trap vector
+    * ```mip```  Machine interrupt pending
+    * ```mcause``` Machine exception cause
+    */
+
+    /*
+    @csr:MEPC ================================================
+    for _EXCEPTION_, holds location of the return address (which means, some valid
+    [imem_addr]) |
+    for _INTERRUPT_ indicates the instruction that was aborted (would be in @insd)
+    for the 2 stage pipeline, assuming inst in @exec always gets executed. NOTE:
+    aborted instruction MUST BE RERUN |
+    for _TRAP_ indicates the next instruction [pc]+4 / [npc]
+    */
+
+    /*
+    @csr:MSTATUS ================================================
+     apparenlty only holds 1 bit? (GIE: global interupt enable)
+        | 1 = interrupts are processed
+        | 0 = ignore interrupts
+        | ignore writes to  all other bits (use a mask)
+        | Only enable when @MIE is also set |
+    Takes priority over @MIE
+
+    */
+
+    /*
+    @csr:MIE ================================================
+     holds 1 bit like @MSTATUS, at index 11
+        | 1 = interrupts are processed
+        | 0 = ignore interrupts
+        | ignore writes to  all other bits (use a mask)
+        | only enable when @MSTATUS is set
+    TODO: confusion between this and @MSTATUS since they seem to describe
+    the same thing
+    */
+
+
+    /*
+    @csr:MTVEC ================================================
+    README has typo, its read only |
+    hard wired to the address 0x1000
+    | ignore writes
+    | "good practice" to make this a system verilog constant or param
+    */
+
+
+    /*
+    @csr:MIP ================================================
+    Only hold single bit at 11, like @MIE indicating if there is
+    an external interrupt pending ([intr] set for at least one cycle) |
+    Read only, cleared once the mret instruction is executed |
+    all other bits always read zero
+    */
+
+
+    /*
+    @csr:MSCRATCH ================================================
+    Free 32-bit CSR, only csr that's read and write it seems |
+    can be manipulated with the appropriate csr instructions
+    */
+
     // internal flipflops
     // these will hold logic that is for read-write and write only registers
     // the rest of the CSRs are read-only, and so the actual FF is contained
@@ -140,4 +235,18 @@ module csrfile (
     endgenerate
 
 
+endmodule
+
+// for convinience
+module nerv_alu (
+    /*
+    input [4:0] alu_function,
+    input [31:0] op_a,
+    input [31:0] op_b,
+    output logic [31:0] result,
+    output logic result_eq_zero
+    */
+);
+    // todo: should be taken from previous lab stuff?
+    logic hi = 0;
 endmodule
