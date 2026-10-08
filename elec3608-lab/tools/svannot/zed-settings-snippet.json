@@ -1,0 +1,20 @@
+{
+  "languages": {
+    "SystemVerilog": {
+      "document_symbols": "on",
+      "language_servers": ["svannot"]
+    },
+    "Verilog": {
+      "document_symbols": "on",
+      "language_servers": ["svannot"]
+    }
+  },
+  "lsp": {
+    "svannot": {
+      "binary": {
+        "path": "/home/workohan/Desktop/ELEC3608/elec3608-lab/tools/svannot/run.sh",
+        "arguments": ["--stdio"]
+      }
+    }
+  }
+}

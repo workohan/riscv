@@ -1,0 +1,32 @@
+{
+  "_why": [
+    "Alternative to zed-settings-snippet.json for when the Rust extension cannot be built.",
+    "Zed compiles dev extensions to wasm32-wasip2, which requires Rust installed via rustup;",
+    "if that is not available, this file reaches the same language server by overriding the",
+    "binary of a server the Verilog extension already registers -- no Rust, nothing to build.",
+    "",
+    "`svls` is used as the host slot because the Verilog extension launches it with no extra",
+    "arguments. Its name will appear in Zed's UI instead of `svannot`, which is cosmetic.",
+    "",
+    "This is unverified: if Zed asks the extension for a binary before honouring binary.path,",
+    "it may try to download the real svls. If that happens, use the rustup route instead."
+  ],
+  "languages": {
+    "SystemVerilog": {
+      "document_symbols": "on",
+      "language_servers": ["svls"]
+    },
+    "Verilog": {
+      "document_symbols": "on",
+      "language_servers": ["svls"]
+    }
+  },
+  "lsp": {
+    "svls": {
+      "binary": {
+        "path": "/home/workohan/Desktop/ELEC3608/elec3608-lab/tools/svannot/run.sh",
+        "arguments": ["--stdio"]
+      }
+    }
+  }
+}

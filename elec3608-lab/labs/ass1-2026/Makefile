@@ -63,6 +63,40 @@ testbench_verilator: $(FIRMWAREFILE) testbench.sv nerv-interrupt.sv testbench.cp
 	testbench.sv nerv-interrupt.sv testbench.cpp
 	$(MAKE) -C obj_dir -f Vtestbench.mk
 
+# ---------------------------------------------------------------------------
+# Linting.  Local addition -- the course Makefile is NOT part of the Canvas
+# submission (README "Submission": a .pdf report plus two .sv files), so this
+# does not affect marking.
+#
+#   make lint           lint the processor design on its own.
+#                       The recipe above passes -Wno-lint, so none of this
+#                       was previously checked.
+#   make lint-contract  elaborate the design *together with* testbench.sv.
+#                       This is the check that the internal signal names the
+#                       testbench pokes at actually exist (regfile, csr_*,
+#                       pc -- see testbench.sv:138-148).  It will fail loudly
+#                       until they do, which is the point: without them the
+#                       whole test suite fails to elaborate.
+#   make lint-names     the same contract check without needing Verilator.
+# ---------------------------------------------------------------------------
+SVANNOT = ../../tools/svannot
+DUTFILES = nerv-interrupt.sv $(wildcard singlecycle-interrupt.sv)
+LINTFLAGS = --lint-only -Wall -Wno-DECLFILENAME
+
+lint:
+	$(VERILATOR) $(LINTFLAGS) --top-module nerv $(DUTFILES)
+	@echo "lint: ok"
+
+lint-contract:
+	$(VERILATOR) $(LINTFLAGS) --top-module testbench testbench.sv $(DUTFILES)
+	@echo "lint-contract: ok"
+
+lint-names:
+	@python3 $(SVANNOT)/lint/check_contract.py nerv-interrupt.sv
+
+.PHONY: all allresults result test_verilator testbench_verilator show rundocker \
+        clean lint lint-contract lint-names
+
 %.elf: %.s
 	$(TOOLCHAIN_PREFIX)gcc -march=rv32i -mabi=ilp32 -Os -Wall -Wextra -Wl,-Bstatic,-T,sections.lds,--strip-debug -ffreestanding -nostdlib -o $@ $^
 

@@ -135,9 +135,9 @@ module nerv #(
 
     // registers, instruction reg, program counter, next pc
     logic [31:0] regfile[0:NUMREGS-1];
-    wire  [31:0] ex_insn;
+    wire [31:0] ex_insn;
     logic [31:0] npc;
-    logic [31:0] pc;
+    logic [31:0] pc;  // pc comment
 
     logic [31:0] imem_addr_q;
 
@@ -156,23 +156,23 @@ module nerv #(
     // boundary between the I-Fetch (IF) stage and the Decode / Register
     // Fetch (ID) stage.
     // ===============================================================
-    logic [31:0] ppc;   // PPC - pipeline PC
-    logic [31:0] ir;    // IR  - instruction register
+    logic [31:0] ppc;  // PPC - pipeline PC
+    logic [31:0] ir;  // IR  - instruction register
 
     always @(posedge clock) begin
         ppc <= pc;
         ir  <= imem_data;
     end
 
-    assign ex_insn = ir; // label: async assignment, so no issue
+    assign ex_insn = ir;  // label: async assignment, so no issue
 
     // components of the instruction
-    wire [ 6:0] insn_funct7;
-    wire [ 4:0] insn_rs2;
-    wire [ 4:0] insn_rs1;
-    wire [ 2:0] insn_funct3;
-    wire [ 4:0] insn_rd;
-    wire [ 6:0] insn_opcode;
+    wire [6:0] insn_funct7;
+    wire [4:0] insn_rs2;
+    wire [4:0] insn_rs1;
+    wire [2:0] insn_funct3;
+    wire [4:0] insn_rd;
+    wire [6:0] insn_opcode;
 
     // split R-type instruction - see section 2.2 of RiscV spec
     assign {insn_funct7, insn_rs2, insn_rs1, insn_funct3, insn_rd, insn_opcode} = ex_insn;
@@ -352,7 +352,7 @@ module nerv #(
     // instruction fields, re-derived from the registered instruction
     wire [ 6:0] ex_funct7 = ex_insn[31:25];
     wire [ 2:0] ex_funct3 = ex_insn[14:12];
-    wire [ 4:0] ex_rd     = ex_insn[11:7];
+    wire [ 4:0] ex_rd = ex_insn[11:7];
     wire [ 6:0] ex_opcode = ex_insn[6:0];
 
     wire [11:0] ex_imm_i;
@@ -361,8 +361,8 @@ module nerv #(
     wire [11:0] ex_imm_s;
     assign ex_imm_s[11:5] = ex_funct7, ex_imm_s[4:0] = ex_rd;
 
-    wire [31:0] ex_imm_i_sext = $signed(ex_imm_i);
-    wire [31:0] ex_imm_s_sext = $signed(ex_imm_s);
+    wire  [31:0] ex_imm_i_sext = $signed(ex_imm_i);
+    wire  [31:0] ex_imm_s_sext = $signed(ex_imm_s);
 
     // ===============================================================
     // STAGE EX  (Execute + Memory + Write-Back)

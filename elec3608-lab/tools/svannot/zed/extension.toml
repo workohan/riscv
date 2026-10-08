@@ -1,0 +1,15 @@
+id = "svannot"
+name = "SV Annot"
+description = "Comment-annotation symbols for Verilog and SystemVerilog (@category:name)"
+version = "0.1.0"
+schema_version = 1
+authors = ["ELEC3608"]
+repository = "https://github.com/"
+
+# Registers the annotation language server against the languages the Verilog
+# extension already defines.  The Verilog extension must also be installed: it
+# supplies the language definitions and the tree-sitter grammar used for syntax
+# highlighting.  This extension only adds a server.
+[language_servers.svannot]
+name = "svannot"
+languages = ["Verilog", "SystemVerilog"]

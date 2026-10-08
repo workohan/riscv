@@ -45,7 +45,7 @@ loop1:
 
 
 /* expected result:
-    expect h0:pc = 0x0020 (PC after ebreak)
+    expect h0:pc = 0x0024 (PC after ebreak; ebreak is at 0x0020)
     expect h0:x4 = 0x0 (count)
     expect h0:mcause = 0x0 (interrupt not taken)
     expect h0:mip = 0x800 (external interrupt in progress but not taken)
