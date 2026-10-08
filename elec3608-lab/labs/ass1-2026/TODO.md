@@ -30,7 +30,7 @@ Make sure to categorise things properly otherwise it will be really hard to unde
 
 ## How to move to different execution
 
-- todo: how to know what value to jump to for pc. or is it given
+- todo: how to know what value to jump to for pc. or is it given --> nvm we always jump to 1000 i just remmebered
 
 ## How to return to previous execution
 
