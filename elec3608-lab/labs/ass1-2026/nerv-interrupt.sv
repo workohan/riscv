@@ -66,8 +66,8 @@ module nerv #(  // THE ACTUAL CPU
     wire  [31:0] s1_inst;  // equal to [ir], just an alias
     always @(posedge clock) begin
         ir <= imem_data;
-        s1_inst <= ir;
     end
+    assign s1_inst = ir;
 
     // @memory:regfile the cpu's registers
 
@@ -153,7 +153,9 @@ module csrfile (
         | 0 = ignore interrupts
         | ignore writes to  all other bits (use a mask)
         | Only enable when @MIE is also set |
-    Takes priority over @MIE
+    Takes priority over @MIE |
+    NOTE: apparenlty supposed to be bit 3, according to the specs and
+    some testcases
 
     */
 

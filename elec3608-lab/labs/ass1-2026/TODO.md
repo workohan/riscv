@@ -4,6 +4,8 @@ Make sure to categorise things properly otherwise it will be really hard to unde
 
 ## Design decisions
 
+
+- another NOTE: can i do the other assignments and put them on my github or something
 - NOTE: apparenlty this relates to how we idenitifed and handled trap instructions?
 
 1. Interrupts
