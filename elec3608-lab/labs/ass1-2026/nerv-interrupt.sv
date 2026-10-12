@@ -50,6 +50,42 @@ module nerv #(  // THE ACTUAL CPU
     input [31:0] dmem_rdata  //
 );
 
+// opcodes - see section 19 of RiscV spec
+localparam OPCODE_LOAD = 7'b00_000_11;
+localparam OPCODE_STORE = 7'b01_000_11;
+localparam OPCODE_MADD = 7'b10_000_11;
+localparam OPCODE_BRANCH = 7'b11_000_11;
+
+localparam OPCODE_LOAD_FP = 7'b00_001_11;
+localparam OPCODE_STORE_FP = 7'b01_001_11;
+localparam OPCODE_MSUB = 7'b10_001_11;
+localparam OPCODE_JALR = 7'b11_001_11;
+
+localparam OPCODE_CUSTOM_0 = 7'b00_010_11;
+localparam OPCODE_CUSTOM_1 = 7'b01_010_11;
+localparam OPCODE_NMSUB = 7'b10_010_11;
+localparam OPCODE_RESERVED_0 = 7'b11_010_11;
+
+localparam OPCODE_MISC_MEM = 7'b00_011_11;
+localparam OPCODE_AMO = 7'b01_011_11;
+localparam OPCODE_NMADD = 7'b10_011_11;
+localparam OPCODE_JAL = 7'b11_011_11;
+
+localparam OPCODE_OP_IMM = 7'b00_100_11;
+localparam OPCODE_OP = 7'b01_100_11;
+localparam OPCODE_OP_FP = 7'b10_100_11;
+localparam OPCODE_SYSTEM = 7'b11_100_11;
+
+localparam OPCODE_AUIPC = 7'b00_101_11;
+localparam OPCODE_LUI = 7'b01_101_11;
+localparam OPCODE_RESERVED_1 = 7'b10_101_11;
+localparam OPCODE_RESERVED_2 = 7'b11_101_11;
+
+localparam OPCODE_OP_IMM_32 = 7'b00_110_11;
+localparam OPCODE_OP_32 = 7'b01_110_11;
+localparam OPCODE_CUSTOM_2 = 7'b10_110_11;
+localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
+
     /* @csr:intr_handler parses the 1 cycle [intr] activation and handles
     execution*/
     // [intr] comes in
@@ -97,7 +133,6 @@ module nerv #(  // THE ACTUAL CPU
     // @unpipe:s1_to_s2 change always block to assign s2_inst <= s1_inst; and change to wire
 
     // @decode:alu_sigs happens in @exec
-
     `define REGION_ALU_LOGIC
     `ifdef REGION_ALU_LOGIC
         wire [ 6:0] s2_inst_funct7;
@@ -133,12 +168,14 @@ module nerv #(  // THE ACTUAL CPU
         wire [31:0] imm_b_sext = $signed(imm_b);
         wire [31:0] imm_j_sext = $signed(imm_j);
     `endif
-    // TODO: can i replace this with a macro?
+
+
+    // TODO: can i replace this with a macro? may not need to since i can just manually decode whatever I
+    // need in the earlier stage
 
 
     // @memory:dmem and its associated signals. note that dmem stuff is external
     // @decode:dmem_sigs done in @exec for convinience
-
 
     /* from old cpu: note that the values must be latched from the other stuff
         assign dmem_valid = mem_wr_enable_ex || mem_rd_enable_ex;
@@ -146,6 +183,55 @@ module nerv #(  // THE ACTUAL CPU
         assign dmem_wstrb = mem_wr_enable_ex ? mem_wr_strb_ex : mem_rd_enable_ex ? 4'h0 : 4'hx;
         assign dmem_wdata = mem_wr_enable_ex ? mem_wr_data_ex : 32'hx;
     */
+
+    `define ALU_IMPLEMENT
+    `ifdef ALU_IMPLEMENT
+    logic        ex_next_wr;
+    logic [31:0] ex_next_rd;
+    logic        ex_illinst;
+
+    logic        mem_wr_enable_ex;
+    logic [31:0] mem_wr_addr_ex;
+    logic [31:0] mem_wr_data_ex;
+    logic [ 3:0] mem_wr_strb_ex;
+
+    logic        mem_rd_enable_ex;
+    logic [31:0] mem_rd_addr_ex;
+    logic [ 4:0] mem_rd_reg_ex;
+    logic [ 4:0] mem_rd_func_ex;
+
+    logic        mem_rd_enable_q;
+    logic [ 4:0] mem_rd_reg_q;
+    logic [ 4:0] mem_rd_func_q;
+
+    wire [31:0] rs1_value = !s2_inst_rs1 ? 0 : regfile[s2_inst_rs1]; // alu in 1
+    wire [31:0] rs2_value = !s2_inst_rs2 ? 0 : regfile[s2_inst_rs2]; // alu in 2
+    always_comb begin
+
+        ex_next_wr = 0;
+        ex_next_rd = 0;
+        ex_illinst = 0; // for catching exceptions
+
+        // reading
+        mem_wr_enable_ex = 0;
+        mem_wr_addr_ex = 'hx;
+        mem_wr_data_ex = 'hx;
+        mem_wr_strb_ex = 'hx;
+
+        // writing
+        mem_rd_enable_ex = 0;
+        mem_rd_addr_ex = 'hx;
+        mem_rd_reg_ex = 'hx;
+        mem_rd_func_ex = 'hx;
+
+        case (s2_inst_opcode)
+
+        default:; // TODO: err?
+        endcase
+
+    end
+    `endif
+
 
     // [dmem_addr] is delayed by
 
