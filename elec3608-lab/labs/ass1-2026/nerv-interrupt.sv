@@ -74,7 +74,23 @@ localparam OPCODE_JAL = 7'b11_011_11;
 localparam OPCODE_OP_IMM = 7'b00_100_11;
 localparam OPCODE_OP = 7'b01_100_11;
 localparam OPCODE_OP_FP = 7'b10_100_11;
-localparam OPCODE_SYSTEM = 7'b11_100_11;
+
+// ===========================================================
+localparam OPCODE_SYSTEM = 7'b11_100_11; // FOR ZICSR
+
+// Zicsr (Unprivileged ISA 5.1.1) -- all on OPCODE_SYSTEM, selected by funct3
+localparam FUNCT3_CSRRW  = 3'b001;
+localparam FUNCT3_CSRRS  = 3'b010;
+localparam FUNCT3_CSRRC  = 3'b011;
+localparam FUNCT3_CSRRWI = 3'b101;
+localparam FUNCT3_CSRRSI = 3'b110;
+localparam FUNCT3_CSRRCI = 3'b111;
+
+// OPCODE_SYSTEM with funct3 == 000: privileged, selected by insn[31:20]
+localparam [11:0] SYSTEM_ECALL  = 12'h000;
+localparam [11:0] SYSTEM_EBREAK = 12'h001;
+localparam [11:0] SYSTEM_MRET   = 12'h302;
+// ===========================================================
 
 localparam OPCODE_AUIPC = 7'b00_101_11;
 localparam OPCODE_LUI = 7'b01_101_11;
@@ -92,6 +108,7 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     // """signals""" go out to tell everything to stop what its doing rn
     // I think this just means tell whatever is in ID to stop
 
+
     // ==============================================
     // @stage:pipeline_control the one hazard that reaches the PC and both
     // pipeline registers: dmem has a SYNCHRONOUS read, so a load occupies
@@ -104,10 +121,11 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     logic        mem_rd_enable_q;  // set by @exec, consumed here
     logic [ 4:0] mem_rd_reg_q;
     logic [ 4:0] mem_rd_func_q;
-    wire         stall = mem_rd_enable_q;
+    wire         stall = mem_rd_enable_q; // will cause stall if i need to write to regfile, todo:
 
     // ==============================================
     // @stage:pc_stuff everything relating to manipulating the program counter.
+
     logic [31:0] npc;  // value that pc will be upated to; this is the address
                        // presented on [imem_addr] this cycle
     logic [31:0] pc;   // the pc that belongs to [imem_data], i.e. the address of
@@ -136,10 +154,11 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     logic [31:0] s1_pc;    // the pc that belongs to [s1_inst] (the old cpu's [ppc])
     always @(posedge clock) begin
         if (reset) begin
-            ir    <= 32'h0000_0013;  // NOP, so ID never decodes an x
+            ir    <= 32'h0000_0013;  // sends a nop
             s1_pc <= RESET_ADDR;
         end else if (stall) begin
             // @dmem read completing: hold the instruction in ID
+            // TODO:
         end else begin
             ir    <= imem_data;
             s1_pc <= pc;   // pairs with [ir]: see the invariant note below
@@ -169,7 +188,7 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
 
 
     // @memory:csrfile uses [csrfile]
-    // instantiate the CSR file
+    // instantiate the CSR file: TODO
     csrfile csr_file (
     // add your code here
     );
@@ -214,18 +233,7 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     // @insd OPERAND FETCH + NEXT-PC DECISION  <-- the branching logic
     //
     // Control transfers are resolved HERE, on the instruction sitting in [ir],
-    // and NOT in @exec.  That is what buys exactly ONE delay slot:
-    //
-    //   the instruction after the branch was fetched on the previous cycle,
-    //   so it is already in flight (in [imem_data]) when the redirect is
-    //   computed.  It lands in [ir] next cycle and retires normally.  No
-    //   bubble, no flush, no extra port on the register file.
-    //
-    // Resolving it in @exec is one stage too late: the instruction after
-    // the delay slot has been fetched by then, so it retires too - two delay
-    // slots, and the branch "jumps the length it would with one".
-    //
-    // The offset base is [s1_pc], NOT [pc]: [pc] has already run one ahead.
+    // This allows us to achieve one delay slot branching :)
     //
     // NOTE: this block sits below the @exec *declarations* because the
     // operand bypass reads [s2_inst] / [ex_next_wr] / [ex_next_rd].  Declare
@@ -233,10 +241,6 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     // ==============================================
     `define REGION_ID_BRANCH_LOGIC
     `ifdef REGION_ID_BRANCH_LOGIC
-        // ---- split the ID instruction ------------------------------------
-        // These MUST be declared at their real widths.  Left implicit they
-        // become 1-bit nets (or hard errors under `default_nettype none`) and
-        // `s1_inst_opcode == OPCODE_BRANCH` would only ever test bit 0.
         wire [ 6:0] s1_inst_funct7;
         wire [ 4:0] s1_inst_rs2;
         wire [ 4:0] s1_inst_rs1;
@@ -245,7 +249,7 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
         wire [ 6:0] s1_inst_opcode;
         assign {s1_inst_funct7, s1_inst_rs2, s1_inst_rs1, s1_inst_funct3, s1_inst_rd, s1_inst_opcode} = s1_inst;
 
-        // I - short immediates (also JALR's offset)
+        // I - short immediates
         wire [11:0] s1_imm_i;
         assign s1_imm_i = s1_inst[31:20];
 
@@ -267,6 +271,7 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
         // [ex_next_wr] / [ex_next_rd] are declared above (cross-stage block).
         // Neither depends on br_a / br_b or on npc, so the bypass below cannot
         // form a combinational loop.
+        // todo: what
 
         // ---- operands for the comparison ---------------------------------
         wire [31:0] s1_rs1_value = !s1_inst_rs1 ? 0 : regfile[s1_inst_rs1];
@@ -288,6 +293,7 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
 
         // ---- next-PC -----------------------------------------------------
         // [npc_misaligned] is declared above (cross-stage block).
+        // @insd:delay_slot_branch branching in stage 1
         always_comb begin
             // sequential by default.  [pc] is the address already sitting in
             // [imem_data], so the next address to present is [pc] + 4.
@@ -335,7 +341,6 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
                 npc_misaligned = 1'b0;
             end
 
-            // reset: park on the reset vector so imem is addressed there
             if (reset) begin
                 npc = RESET_ADDR;
                 npc_misaligned = 1'b0;
@@ -381,19 +386,12 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     `endif
 
 
-    // TODO: can i replace this with a macro? may not need to since i can just manually decode whatever I
-    // need in the earlier stage
-
-
     // @memory:dmem and its associated signals. note that dmem stuff is external
     // @decode:dmem_sigs done in @exec for convinience
     // the dmem_* output wiring lives at the bottom of the module
 
     `define ALU_IMPLEMENT
     `ifdef ALU_IMPLEMENT
-    // @exec interface signals.  Declared OUTSIDE the REGION_* macros (as
-    // the cross-stage block above is) so that the dmem wiring and the
-    // pipeline-control stall still elaborate when a region is switched off.
     logic        ex_illinst;   // illegal instruction / bad jump target
 
     logic        mem_wr_enable_ex;
@@ -406,6 +404,7 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     logic [ 4:0] mem_rd_reg_ex;
     logic [ 4:0] mem_rd_func_ex;
 
+    // todo: unused?
     wire [31:0] rs1_value = !s2_inst_rs1 ? 0 : regfile[s2_inst_rs1]; // alu in 1
     wire [31:0] rs2_value = !s2_inst_rs2 ? 0 : regfile[s2_inst_rs2]; // alu in 2
     always_comb begin
@@ -438,34 +437,36 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
                 ex_next_wr = 1;
                 ex_next_rd = (s2_inst[31:12] << 12) + s2_pc;
             end
-            // Jump And Link.  The return address is the instruction AFTER the
-            // delay slot, hence +8 and not +4: with +4 a `ret` would re-execute
-            // the delay slot.
+
             OPCODE_JAL: begin
                 ex_next_wr = 1;
-                ex_next_rd = s2_pc + 8;
+                ex_next_rd = s2_pc + 8; // since its the addr after delay slot
             end
-            // Jump And Link Register (indirect jump)
+
             OPCODE_JALR: begin
                 case (s2_inst_funct3)
                     3'b000  /* JALR */: begin
                         ex_next_wr = 1;
-                        ex_next_rd = s2_pc + 8;
+                        ex_next_rd = s2_pc + 8; // ibid
                     end
                     default: ex_illinst = 1;
                 endcase
             end
-            // Branch: condition + redirect already done in @insd, this
-            // arm only validates the encoding.
+
+            // @delay_slot_branch since we do branching there we treat branch instructions
+            // that make it till here as "illegal"
             OPCODE_BRANCH: begin
                 case (s2_inst_funct3)
                     3'b000, 3'b001, 3'b100, 3'b101, 3'b110, 3'b111: ;
                     default: ex_illinst = 1;
                 endcase
             end
-            // ---- rest of the ISA: YOURS --------------------------------
+
+
+            // TODO: move other stuff here as well
             // LUI, LOAD, STORE, OP_IMM, OP, SYSTEM (Zicsr + MRET + EBREAK).
             // Everything you lift from nerv_part4.sv goes here.
+
             default:; // TODO: err?  (this default is also where the
                       //        illegal-instruction trap has to come from -
                       //        `fence` in firmware08/09 lands here)
@@ -473,8 +474,10 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
 
         // a jump / branch target that was not word aligned, detected in
         // @insd and carried through the pipeline
+        // also invalid values for ALU operations would be good.
         ex_illinst = ex_illinst | ex_misaligned;
 
+        // todo: what
         // @dmem read completing.  This cycle's EX instruction is a
         // REPLAY: the operands it is holding are the ones latched before the
         // load result landed, so nothing it produces may be committed - in
