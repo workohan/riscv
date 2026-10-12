@@ -189,6 +189,8 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
 
     // @memory:csrfile uses [csrfile]
     // instantiate the CSR file: TODO
+    // NOTE: csr write takes 1 clock cycle (is okay) and read is async, so putting it in mem stage
+    // should be okay
     csrfile csr_file (
     // add your code here
     );
@@ -664,18 +666,4 @@ module csrfile (
     endgenerate
 
 
-endmodule
-
-// for convinience
-module nerv_alu (
-    /*
-    input [4:0] alu_function,
-    input [31:0] op_a,
-    input [31:0] op_b,
-    output logic [31:0] result,
-    output logic result_eq_zero
-    */
-);
-    // todo: should be taken from previous lab stuff?
-    logic hi = 0;
 endmodule
