@@ -56,10 +56,12 @@ module nerv #(  // THE ACTUAL CPU
     // """signals""" go out to tell everything to stop what its doing rn
     // I think this just means tell whatever is in ID to stop
 
+    // ==============================================
     // @stage:pc_stuff everything relating to manipulating the program counter.
     logic [31:0] npc;  // value that pc will be upated to
     logic [31:0] pc;  // points to the the next instruction to load (i+1)
 
+    // ==============================================
     // @stage:insd after @pc_stuff, actual stage 1 of pipeline
 
     logic [31:0] ir;  // in: imem_data, outputs the ith instruction
@@ -70,6 +72,13 @@ module nerv #(  // THE ACTUAL CPU
     assign s1_inst = ir;
 
     // @memory:regfile the cpu's registers
+    logic [31:0] regfile[0:NUMREGS-1];
+    always @(posedge clock) begin
+        // assign values to alu inputs
+
+        // write back handling (could move to memwrite?)
+    end
+
 
     // @memory:csrfile uses [csrfile]
     // instantiate the CSR file
@@ -77,16 +86,59 @@ module nerv #(  // THE ACTUAL CPU
     // add your code here
     );
 
+    // ==============================================
     // @stage:exec after @insd, stage 2 of the pipeline
 
-    // @memory:dmem and its associated signals. note that dmem stuff is external
-    // @decode:dmem_sigs done in @exec for convinience
-    wire [31:0] s2_inst;  // latches [s1_inst]
+    // latches [s1_inst]
+    logic [31:0] s2_inst;
     always @(posedge clock) begin
         s2_inst <= s1_inst;
     end
+    // @unpipe:s1_to_s2 change always block to assign s2_inst <= s1_inst; and change to wire
 
     // @decode:alu_sigs happens in @exec
+
+    `define REGION_ALU_LOGIC
+    `ifdef REGION_ALU_LOGIC
+        wire [ 6:0] s2_inst_funct7;
+        wire [ 4:0] s2_inst_rs2;
+        wire [ 4:0] s2_inst_rs1;
+        wire [ 2:0] s2_inst_funct3;
+        wire [ 4:0] s2_inst_rd;
+        wire [ 6:0] s2_inst_opcode;
+        assign {s2_inst_funct7, s2_inst_rs2, s2_inst_rs1, s2_inst_funct3, s2_inst_rd, s2_inst_opcode} = s2_inst;
+
+
+        // setup for I, S, B & J type instructions
+        // I - short immediates and loads
+        wire [11:0] imm_i;
+        assign imm_i = s2_inst[31:20];
+
+        // S - stores
+        wire [11:0] imm_s;
+        assign imm_s[11:5] = s2_inst_funct7, imm_s[4:0] = s2_inst_rd;
+
+        // B - conditionals
+        wire [12:0] imm_b;
+        assign {imm_b[12], imm_b[10:5]} = s2_inst_funct7,
+            {imm_b[4:1], imm_b[11]} = s2_inst_rd,
+            imm_b[0] = 1'b0;
+
+        // J - unconditional jumps
+        wire [20:0] imm_j;
+        assign {imm_j[20], imm_j[10:1], imm_j[11], imm_j[19:12], imm_j[0]} = {s2_inst[31:12], 1'b0};
+
+        wire [31:0] imm_i_sext = $signed(imm_i);
+        wire [31:0] imm_s_sext = $signed(imm_s);
+        wire [31:0] imm_b_sext = $signed(imm_b);
+        wire [31:0] imm_j_sext = $signed(imm_j);
+    `endif
+    // TODO: can i replace this with a macro?
+
+
+    // @memory:dmem and its associated signals. note that dmem stuff is external
+    // @decode:dmem_sigs done in @exec for convinience
+
 
     /* from old cpu: note that the values must be latched from the other stuff
         assign dmem_valid = mem_wr_enable_ex || mem_rd_enable_ex;
@@ -145,6 +197,8 @@ module csrfile (
     aborted instruction MUST BE RERUN |
     for _TRAP_ indicates the next instruction [pc]+4 / [npc]
     */
+
+
 
     /*
     @csr:MSTATUS ================================================
