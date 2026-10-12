@@ -1,5 +1,9 @@
 Make sure to categorise things properly otherwise it will be really hard to understand!!
 
+# Doing now:
+1. have basic csr working and also figured out what the instructions do. now just need to implement instruction logic
+2. Need to figure out interactions between pc and the signals we're going to be using (intr, exception, trap, etc)
+
 # Making actual design
 
 ## Design decisions
@@ -42,7 +46,7 @@ Make sure to categorise things properly otherwise it will be really hard to unde
 
 ## Questions
 
-1. what are the 6 instructions that they want implemented?
+1. what are the 6 instructions that they want implemented? @
 2. why is there ebreak in mtvec section?
 3. When we interrupt something and there is an instruction in EX, do we stop that as well?
 4. https://edstem.org/au/courses/39073/discussion/3620175 --> ebreak handling is still opaque. worse yet, seems like we have to choose something:

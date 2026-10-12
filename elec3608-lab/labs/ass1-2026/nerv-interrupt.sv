@@ -116,6 +116,7 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     // During that second cycle the fetch and both pipeline registers are
     // frozen, so the instruction behind the load replays instead of latching
     // a stale operand / committing a stale result.
+
     // TODO: the load-use stall (source register still in @exec) hangs
     //       off [stall] as well.
     logic        mem_rd_enable_q;  // set by @exec, consumed here
@@ -166,26 +167,9 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     end
     assign s1_inst = ir;
 
-    // ---------------------------------------------------------------
-    // Pairing invariant.  [imem_addr] is [npc] and [pc] is loaded from
-    // [npc], so imem_addr(k-1) == pc(k), which makes
-    //
-    //     imem_data(k) == insn(pc(k))        and     ir(k+1) == imem_data(k)
-    //
-    // so [s1_pc] and [s1_inst] always describe the same instruction, and
-    // [s1_pc] is the correct base for a branch offset (a RISC-V branch is
-    // relative to the branch itself, not to the instruction being fetched).
-    // [pc] has already run one ahead of the instruction in [ir].
-    // ---------------------------------------------------------------
 
     // @memory:regfile the cpu's registers
     logic [31:0] regfile[0:NUMREGS-1];
-    always @(posedge clock) begin
-        // assign values to alu inputs
-
-        // write back handling (could move to memwrite?)
-    end
-
 
     // @memory:csrfile uses [csrfile]
     // instantiate the CSR file: TODO
