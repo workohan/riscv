@@ -369,6 +369,16 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
         wire [31:0] imm_s_sext = $signed(imm_s);
         wire [31:0] imm_b_sext = $signed(imm_b);
         wire [31:0] imm_j_sext = $signed(imm_j);
+
+        // @decode:csr_inst decode component  for zicsr instructions
+        // need to decode in stage 1 as well
+        wire [11:0] zicsr_src_dest; // passed into csrfile
+        wire [4:0] zicsr_rs1; // reg val
+        wire [2:0] zicsr_funct3; // subinstruction
+        wire [4:0] zicsr_rd; // to write to
+        wire [6:0] _zicsr_opcode; // unused
+
+        assign {zicsr_src_dest, zicsr_rs1, zicsr_funct3, zicsr_rd, _zicsr_opcode} = s2_inst;
     `endif
 
 
@@ -452,6 +462,33 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
             // TODO: move other stuff here as well
             // LUI, LOAD, STORE, OP_IMM, OP, SYSTEM (Zicsr + MRET + EBREAK).
             // Everything you lift from nerv_part4.sv goes here.
+
+            // @csr:instructions
+            OPCODE_SYSTEM: begin
+                // assign {zicsr_src_dest, zicsr_rs1, zicsr_funct3, zicsr_rd, _zicsr_opcode} = s2_inst;
+                // 1. decode the intputs
+                // 2. use inputs to do some calcs
+                // 3. set the inputs to the input values to the csrfile
+                // 4. link csr file back to regfile (will need a mux or something)
+
+                case (zicsr_funct3)
+                /*
+                    csrrw:
+                    cycle 1: get rs value from regfile
+                    cycle 2: write to csr and also write output of csr to regfile
+                    * special handling for rd=x0; no csr read takes place
+
+                    csrrs: (what would rs be used for?)
+                    same as rw but we also use the bitmask
+
+                    csrrc: read and clear
+                */
+                
+                
+
+                endcase
+
+            end
 
             default:; // TODO: err?  (this default is also where the
                       //        illegal-instruction trap has to come from -
