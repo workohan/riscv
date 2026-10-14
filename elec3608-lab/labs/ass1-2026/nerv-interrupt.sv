@@ -170,14 +170,8 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
 
     // @memory:regfile the cpu's registers
     logic [31:0] regfile[0:NUMREGS-1];
+    logic regfile_csr_w_en = 0;
 
-    // @memory:csrfile uses [csrfile]
-    // instantiate the CSR file: TODO
-    // NOTE: csr write takes 1 clock cycle (is okay) and read is async, so putting it in mem stage
-    // should be okay
-    csrfile csr_file (
-    // add your code here
-    );
 
     // ==============================================
     // @stage:exec after @insd, stage 2 of the pipeline
@@ -252,6 +246,21 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
         wire [31:0] s1_imm_i_sext = $signed(s1_imm_i);
         wire [31:0] s1_imm_b_sext = $signed(s1_imm_b);
         wire [31:0] s1_imm_j_sext = $signed(s1_imm_j);
+
+        // csr:s1_csr_decode
+        wire [11:0] s1_zicsr_src_dest; // passed into csrfile
+        wire [4:0] s1_zicsr_rs1; // reg val
+        wire [2:0] s1_zicsr_funct3; // subinstruction
+        wire [4:0] s1_zicsr_rd; // to write to
+        wire [6:0] _s1_zicsr_opcode; // unused
+
+        assign {s1_zicsr_src_dest, s1_zicsr_rs1, s1_zicsr_funct3, s1_zicsr_rd, _s1_zicsr_opcode} = s1_inst;
+
+        logic[31:0] s2_zicsr_rs1_val; // the actual value of rs1 taken from regfile
+        always @(posedge clock) begin
+            assign s2_zicsr_rs1_val = regfile[s1_zicsr_rs1];
+        end
+
         // ------------------------------------------------------------------
 
         // [ex_next_wr] / [ex_next_rd] are declared above (cross-stage block).
@@ -370,7 +379,7 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
         wire [31:0] imm_b_sext = $signed(imm_b);
         wire [31:0] imm_j_sext = $signed(imm_j);
 
-        // @decode:csr_inst decode component  for zicsr instructions
+        // @decode:s2_csr_inst decode component  for zicsr instructions
         // need to decode in stage 1 as well
         wire [11:0] zicsr_src_dest; // passed into csrfile
         wire [4:0] zicsr_rs1; // reg val
@@ -380,6 +389,71 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
 
         assign {zicsr_src_dest, zicsr_rs1, zicsr_funct3, zicsr_rd, _zicsr_opcode} = s2_inst;
     `endif
+
+
+    // @memory:csrfile uses [csrfile]
+    // ---------------------------------------------------------------
+    // Hookup only.  Who drives what:
+    //
+    //   here  -> csrfile : csr_addr, csr_re, csr_we, csr_wdata,
+    //                      csr_mepc, csr_mcause, csr_mtvec, csr_mip
+    //
+    //   csrfile -> here  : csr_rdata, csr_mstatus, csr_mie, csr_mscratch
+    //
+    // [csr_mstatus] is driven BY the csrfile: its rw_mstatus_bits port is
+    // assigned inside that module.  Never assign it here - two drivers make
+    // every read x.  Trap entry and mret change it through the we/wdata port.
+    //
+    // The seven csr_m* / csr_mscratch names are also what testbench.sv:138-148
+    // reads hierarchically, so do not rename them.
+    // ---------------------------------------------------------------
+
+    // access port, driven by @exec (CSR instruction, or trap entry / mret)
+    logic [11:0] csr_addr  = 12'h000;  // CSR number, instruction[31:20]
+    logic [31:0] csr_re    = 32'h0;    // bit-addressable READ mask  (0 = no read)
+    logic [31:0] csr_we    = 32'h0;    // bit-addressable WRITE mask (0 = no write)
+    logic [31:0] csr_wdata = 32'h0;    // bits to write where [csr_we] is set
+    wire  [31:0] csr_rdata;            // combinational read-back, same cycle
+
+    // read-only CSRs: storage lives here in the processor
+    logic [31:0] csr_mepc;             // trap: return address
+    logic [31:0] csr_mcause;           // trap: cause code
+    logic [31:0] csr_mip;              // sticky: external interrupt pending
+    wire  [31:0] csr_mtvec = MTVEC_ADDR;  // hard-wired trap vector
+
+    // read/write CSRs: storage lives in the [csrfile]
+    wire  [31:0] csr_mstatus;          // driven by csrfile (see note above)
+    wire  [31:0] csr_mie;              // driven by csrfile
+    wire  [31:0] csr_mscratch;         // driven by csrfile
+
+    // reset only.  The update logic (trap entry, mret, latching [intr]) is
+    // TODO - this just keeps the three registers out of x and gives them their
+    // architectural reset values.
+    always @(posedge clock) begin
+        if (reset) begin
+            csr_mepc   <= 32'h0;
+            csr_mcause <= 32'h0;
+            csr_mip    <= 32'h0;
+        end
+    end
+
+    csrfile csr_file (
+        .clock  (clock),
+        .reset  (reset),
+        .addr   (csr_addr),           // instruction[31:20]
+        .re     (csr_re),             // read mask
+        .we     (csr_we),             // write mask
+        .rdata  (csr_rdata),          // combinational
+        .wdata  (csr_wdata),
+
+        .ro_mepc_bits    (csr_mepc),      // in:  storage is ours
+        .rw_mstatus_bits (csr_mstatus),   // out: storage is the csrfile's
+        .rw_mie_bits     (csr_mie),       // out
+        .ro_mtvec_bits   (csr_mtvec),     // in:  constant
+        .ro_mip_bits     (csr_mip),       // in:  storage is ours
+        .ro_mcause_bits  (csr_mcause),    // in:  storage is ours
+        .rw_mscratch_bits(csr_mscratch)   // out
+    );
 
 
     // @memory:dmem and its associated signals. note that dmem stuff is external
@@ -483,8 +557,36 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
 
                     csrrc: read and clear
                 */
-                
-                
+
+                // TODO: rd = 0 handling
+                // TODO: add immediates
+                // TODO: what does "zero extend by XLEN mean??"
+                3'b000: /*CSRRW */ begin
+                    // swap registers
+                    csr_re = 32'hFFFF_FFFF;
+                    csr_we = 32'hFFFF_FFFF;
+                    csr_wdata = s2_zicsr_rs1_val;
+                    csr_addr = zicsr_src_dest;
+
+                end
+
+                3'b001: /*CSRRS */ begin
+                    // read and set bits
+                    csr_re = 32'hFFFF_FFFF; // read entire reg
+                    csr_we = s2_zicsr_rs1_val; // only set provided bits
+                    csr_wdata = 32'hFFFF_FFFF; // forces setting
+                    csr_addr = zicsr_src_dest; // as usual
+                end
+
+                3'b010: /*CSRRC */ begin
+                    // read and clear bits
+                    csr_re = 32'hFFFF_FFFF; // read entire reg
+                    csr_we = s2_zicsr_rs1_val; // only clear provided bits
+                    csr_wdata = 32'b0; // forces clearing
+                    csr_addr = zicsr_src_dest; // as usual
+                end
+
+
 
                 endcase
 
@@ -538,6 +640,13 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
     assign dmem_addr  = mem_wr_enable_ex ? mem_wr_addr_ex : mem_rd_enable_ex ? mem_rd_addr_ex : 32'hx;
     assign dmem_wstrb = mem_wr_enable_ex ? mem_wr_strb_ex : mem_rd_enable_ex ? 4'h0 : 4'hx;
     assign dmem_wdata = mem_wr_enable_ex ? mem_wr_data_ex : 32'hx;
+
+    // @memory:regfile_writes behaviour of regfile writes
+    always @(posedge clock) begin
+        if (regfile_csr_w_en) begin
+            regfile[zicsr_rd] = csr_rdata;
+        end
+    end
 
 endmodule
 
