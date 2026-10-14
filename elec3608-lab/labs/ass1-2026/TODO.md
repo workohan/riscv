@@ -1,8 +1,14 @@
 Make sure to categorise things properly otherwise it will be really hard to understand!!
 
 # Doing now:
-1. have basic csr working and also figured out what the instructions do. now just need to implement instruction logic
-2. Need to figure out interactions between pc and the signals we're going to be using (intr, exception, trap, etc)
+1. Need to figure out interactions between pc and the signals we're going to be using (intr, exception, trap, etc)
+2. Find more exceptions and stages in which they can be caught
+3. What the hell happens to the pc if id = branch and exec leads to exception?
+  * Nightmare sit:
+    * id = branch
+    * exec = causes an exception
+    * interrupt pending
+    * Nvm can handle: expected behaviour is take the intr, ignore branch because of excep and take excep. so practically, intr -> excep -> return
 
 # Making actual design
 
@@ -30,15 +36,25 @@ Make sure to categorise things properly otherwise it will be really hard to unde
 
 ### Conditions for exceptions
 
-- Divide by zero
-- "illegal instruction" -> am i supposed to know what? like bit shift 33 or something todo
-  - In readme it says that they usually happen during ex or mem, but for illegal instructions we could technically detect them during ID. => okay?
+* Can see in ID:
+  - "illegal instruction" -> am i supposed to know what? like bit shift 33 or something todo
+  - invalid register / memory values
+* Only seen in exec:
+  - ill formatted / unrecognised instruction (could technically move to id)
+  - int overflow / underflow
+* TODO: add more
+
+- In readme it says that they usually happen during ex or mem, but for illegal instructions we could technically detect them during ID. => okay?
+
 
 ## How to move to different execution
 
 - todo: how to know what value to jump to for pc. or is it given --> nvm we always jump to 1000 i just remmebered
 
 ## How to return to previous execution
+
+* Excep
+* Intr
 
 - Note: since we're interrupting something (and we assume thats in ID since what are we even going to stop for EX. writebacks?) the return address is going to be the instruction in ID, so the previous program counter value i.e. ppc.
 - todo: ... what do i actaully "stop"? for single cycle there is nothing to stop, you just start executing excep / intr code next cycle. for 2 stage TODO QUESTION: do you stop what is in id from progressing to ex? for intr it seems so + exceptions detected during the execute stage. 
@@ -47,7 +63,7 @@ Make sure to categorise things properly otherwise it will be really hard to unde
 ## Questions
 
 1. what are the 6 instructions that they want implemented? @
-2. why is there ebreak in mtvec section?
+2. why is there ebreak in mtvec section? @
 3. When we interrupt something and there is an instruction in EX, do we stop that as well?
 4. https://edstem.org/au/courses/39073/discussion/3620175 --> ebreak handling is still opaque. worse yet, seems like we have to choose something:
    "This is an example of something you should discuss in your report. Make a decision on how, as an engineer, you'd like to handle this situation. Should you flag this test as erroneous? Should you accomodate the tests and possibly make your design incosistent? Should the test be rewritten and how? Ultimately, I'll read your report first, and if you have a clear reason for deviating from the test files that makes logical sense, and your design operates correctly under that thinking, I should still be able to give you the mark.

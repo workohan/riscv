@@ -286,6 +286,9 @@ localparam OPCODE_CUSTOM_3 = 7'b11_110_11;
             end
         end
 
+        // @td:todo_pc need handling here for manipulating the pc values etc so that
+        // we can interact with the csr file and jumps properly
+
         // ---- next-PC -----------------------------------------------------
         // [npc_misaligned] is declared above (cross-stage block).
         // @insd:delay_slot_branch branching in stage 1
